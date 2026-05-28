@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scott Scharl — Keller Williams Realtor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                DEFAULT: "#cc0000",
+                dark: "#a30000",
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="min-h-screen bg-white text-gray-900 flex items-center justify-center p-6 antialiased"
+  >
+    <main class="w-full max-w-xs text-center">
+      <img
+        src="JktUMTZO_400x400-removebg-preview.png"
+        alt="Scott Scharl"
+        class="mx-auto mb-6 h-32 w-32 rounded-full object-cover border-4 border-brand bg-gray-100"
+        onerror="
+          this.style.background = '#f3f4f6';
+          this.removeAttribute('src');
+        "
+      />
+
+      <h1 class="text-2xl font-semibold tracking-tight leading-tight">
+        Scott Scharl
+      </h1>
+      <p class="text-gray-500 text-sm mt-1">Realtor</p>
+      <p class="text-brand text-sm font-semibold tracking-wider mt-1">
+        KELLER WILLIAMS METRO
+      </p>
+      <p class="text-gray-500 text-sm">Royal Oak, MI</p>
+
+      <nav class="mt-8 flex flex-col gap-3">
+        <a
+          href="tel:+16025584553"
+          class="flex items-center justify-center gap-2 w-full rounded-full border-2 border-brand bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark hover:border-brand-dark transition-colors"
+        >
+          <i data-lucide="phone" class="h-4 w-4"></i>
+          <span>Call</span>
+        </a>
+        <a
+          href="mailto:hello@scottscharl.com"
+          class="flex items-center justify-center gap-2 w-full rounded-full border-2 border-brand bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark hover:border-brand-dark transition-colors"
+        >
+          <i data-lucide="mail" class="h-4 w-4"></i>
+          <span>Email</span>
+        </a>
+        <!-- <a
+          href="#"
+          class="flex items-center justify-center gap-2 w-full rounded-full border-2 border-brand bg-white px-5 py-2.5 text-sm font-semibold text-brand hover:bg-red-50 transition-colors"
+        >
+          <i data-lucide="home" class="h-4 w-4"></i>
+          <span>View Listings</span>
+        </a> -->
+        <a
+          href="https://facebook.com/scottscharlrealtor"
+          target="_blank"
+          rel="noopener"
+          class="flex items-center justify-center gap-2 w-full rounded-full border-2 border-brand bg-white px-5 py-2.5 text-sm font-semibold text-brand hover:bg-red-50 transition-colors"
+        >
+          <i data-lucide="facebook" class="h-4 w-4"></i>
+          <span>Facebook</span>
+        </a>
+      </nav>
+    </main>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>
