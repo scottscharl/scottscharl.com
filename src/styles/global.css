@@ -3,4 +3,24 @@
 @theme {
   --color-brand: #cc0000;
   --color-brand-dark: #a30000;
+
+  /* Market report theme tokens — values come from the --c-* vars set
+     per-page (dark on screen, light in print). See market-report.astro. */
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-fg: var(--c-fg);
+  --color-fg-soft: var(--c-fg-soft);
+  --color-fg-mute: var(--c-fg-mute);
+  --color-line: var(--c-line);
+  --color-band: var(--c-band);
+
+  /* Keller Williams brand (constant across screen/print) */
+  --color-kw: #c8102e;
+  --color-kw-deep: #9e0c24;
+  --color-kw-hover: #e01234;
+
+  --font-display: "Manrope", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
 }

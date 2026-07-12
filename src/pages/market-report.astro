@@ -1,0 +1,363 @@
+---
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Royal Oak Housing Market — By the Numbers</title>
+    <meta
+      name="description"
+      content="Royal Oak, MI housing market report — median sale price, homes sold, days on market and more for the past 90 days, from Scott Scharl, Keller Williams Metro."
+    />
+    <link rel="icon" type="image/png" href="/profile.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style is:global>
+      /* ---- DARK MODE (default, on screen) ---- */
+      :root {
+        --c-bg: #0e0f11;
+        --c-surface: #17191c;
+        --c-surface-2: #1f2226;
+        --c-fg: #f2f0ec;
+        --c-fg-soft: #c4c8cf;
+        --c-fg-mute: #8a9099;
+        --c-line: #2c3036;
+        --c-band: #24272c;
+      }
+
+      /* ---- PRINT MODE: all white, black text, no dark bars, keep color logo + headshot, hide button ---- */
+      @media print {
+        :root {
+          --c-bg: #ffffff;
+          --c-surface: #ffffff;
+          --c-surface-2: #ffffff;
+          --c-fg: #111111;
+          --c-fg-soft: #333333;
+          --c-fg-mute: #666666;
+          --c-line: #d8d2c8;
+          --c-band: #ffffff;
+        }
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        body {
+          padding: 0 !important;
+        }
+        .sheet {
+          box-shadow: none !important;
+          border: 1px solid #d8d2c8 !important;
+        }
+        /* kill the dark bars -> white, no ink */
+        header.dark-bar,
+        footer.dark-bar {
+          background: #ffffff !important;
+        }
+        footer.dark-bar {
+          border-top: 1px solid #d8d2c8 !important;
+        }
+        /* header/footer text was white-for-dark-bar -> force dark so it reads on white */
+        header.dark-bar,
+        header.dark-bar *,
+        footer.dark-bar,
+        footer.dark-bar * {
+          color: #111111 !important;
+        }
+        /* keep KW red accents (title span, icons) */
+        .text-kw,
+        [class*="text-kw"] {
+          color: #c8102e !important;
+        }
+        /* reveal/hide print twins */
+        .print-hide {
+          display: none !important;
+        }
+        .print-show {
+          display: block !important;
+        }
+        /* hide CTA button(s) — not clickable on paper */
+        .cta-print-hide {
+          display: none !important;
+        }
+        /* force header title text dark in print (was near-white for the dark bar) */
+        .hdr-title {
+          color: #111111 !important;
+        }
+        .hdr-sub {
+          color: #555555 !important;
+        }
+        @page {
+          margin: 0.4in;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        a {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="font-body bg-bg text-fg p-4 sm:p-8 md:p-12 flex justify-center">
+    <div
+      class="sheet w-full max-w-[860px] bg-surface border border-line shadow-[0_24px_48px_-24px_rgba(0,0,0,0.5)]"
+    >
+      <!-- Masthead -->
+      <header
+        class="dark-bar relative overflow-hidden bg-surface-2 text-[#f7f4f0] px-6 sm:px-10 py-6 sm:py-9"
+      >
+        <img
+          class="h-7 sm:h-8 w-auto absolute right-6 sm:right-10 top-6 sm:top-9 max-w-[170px] object-contain object-top print-hide"
+          alt="Keller Williams"
+          src="/kw-logo.png"
+        />
+        <img
+          class="h-7 sm:h-8 w-auto absolute right-6 sm:right-10 top-6 sm:top-9 max-w-[170px] object-contain object-top print-show hidden"
+          alt="Keller Williams"
+          src="/kw-logo-print.png"
+        />
+        <h1
+          class="hdr-title font-display font-extrabold tracking-[-0.02em] leading-none text-4xl sm:text-5xl mb-2 text-[#f7f4f0]"
+        >
+          Royal Oak
+        </h1>
+        <div
+          class="hdr-title font-display text-2xl sm:text-3xl text-[#f7f4f0] tracking-[-0.01em] font-bold"
+        >
+          Housing Market Report
+        </div>
+        <div
+          class="hdr-sub font-body text-[15px] sm:text-base text-[#c4d2e0] mt-1.5 font-medium"
+        >
+          Past 90 Days <span class="text-[#8a9099]">· Apr 11 – Jul 10, 2026</span>
+        </div>
+      </header>
+
+      <!-- Big numbers grid -->
+      <section
+        class="grid grid-cols-2 md:grid-cols-4 border-t border-b border-line [&>div]:p-6 [&>div]:sm:p-8 [&>div]:border-line [&>div]:flex [&>div]:flex-col [&>div]:min-w-0 [&>div]:overflow-hidden"
+      >
+        <div class="border-r border-b">
+          <div
+            class="font-body text-[13px] sm:text-[13.5px] tracking-tight text-fg-soft mb-3 font-semibold leading-none whitespace-nowrap h-[14px] flex items-center"
+          >
+            Median Sale Price
+          </div>
+          <div
+            class="font-display font-extrabold text-[clamp(22px,5.5vw,34px)] tracking-[-0.03em] leading-none flex items-end min-h-[40px] min-w-0 max-w-full whitespace-nowrap"
+          >
+            <span class="inline-block"
+              ><span
+                class="text-[0.5em] font-bold text-fg-mute align-top mr-0.5 relative top-[0.15em]"
+                >$</span
+              >380,000</span
+            >
+          </div>
+        </div>
+        <div class="border-b md:border-r">
+          <div
+            class="font-body text-[13px] sm:text-[13.5px] tracking-tight text-fg-soft mb-3 font-semibold leading-none whitespace-nowrap h-[14px] flex items-center"
+          >
+            Homes Sold
+          </div>
+          <div
+            class="font-display font-extrabold text-[clamp(22px,5.5vw,34px)] tracking-[-0.03em] leading-none flex items-end min-h-[40px] min-w-0 max-w-full whitespace-nowrap"
+          >
+            <span class="inline-block">358</span>
+          </div>
+        </div>
+        <div class="border-r border-b">
+          <div
+            class="font-body text-[13px] sm:text-[13.5px] tracking-tight text-fg-soft mb-3 font-semibold leading-none whitespace-nowrap h-[14px] flex items-center"
+          >
+            Median time to sell
+          </div>
+          <div
+            class="font-display font-extrabold text-[clamp(22px,5.5vw,34px)] tracking-[-0.03em] leading-none flex items-end min-h-[40px] min-w-0 max-w-full whitespace-nowrap"
+          >
+            <span class="inline-block"
+              >13 <span class="text-[0.5em] font-bold text-fg-mute align-baseline"
+                >Days</span
+              ></span
+            >
+          </div>
+        </div>
+        <div class="border-b">
+          <div
+            class="font-body text-[11px] sm:text-[13px] tracking-tight text-fg-soft mb-3 font-semibold leading-none whitespace-nowrap h-[14px] flex items-center"
+          >
+            Sold at or above asking price
+          </div>
+          <div
+            class="font-display font-extrabold text-[clamp(22px,5.5vw,34px)] tracking-[-0.03em] leading-none flex items-end min-h-[40px] min-w-0 max-w-full whitespace-nowrap"
+          >
+            <span class="inline-block"
+              >63<span class="text-[0.5em] font-bold text-fg-mute align-baseline ml-0.5"
+                >%</span
+              ></span
+            >
+          </div>
+        </div>
+        <div class="border-r border-b">
+          <div
+            class="font-body text-[13px] sm:text-[13.5px] tracking-tight text-fg-soft mb-3 font-semibold leading-none whitespace-nowrap h-[14px] flex items-center"
+          >
+            Median Price / Sq Ft
+          </div>
+          <div
+            class="font-display font-extrabold text-[clamp(22px,5.5vw,34px)] tracking-[-0.03em] leading-none flex items-end min-h-[40px] min-w-0 max-w-full whitespace-nowrap"
+          >
+            <span class="inline-block"
+              ><span
+                class="text-[0.5em] font-bold text-fg-mute align-top mr-0.5 relative top-[0.15em]"
+                >$</span
+              >306</span
+            >
+          </div>
+        </div>
+        <div class="border-b md:border-r">
+          <div
+            class="font-body text-[13px] sm:text-[13.5px] tracking-tight text-fg-soft mb-3 font-semibold leading-none whitespace-nowrap h-[14px] flex items-center"
+          >
+            Bought with cash
+          </div>
+          <div
+            class="font-display font-extrabold text-[clamp(22px,5.5vw,34px)] tracking-[-0.03em] leading-none flex items-end min-h-[40px] min-w-0 max-w-full whitespace-nowrap"
+          >
+            <span class="inline-block"
+              >24<span class="text-[0.5em] font-bold text-fg-mute align-baseline ml-0.5"
+                >%</span
+              ></span
+            >
+          </div>
+        </div>
+        <div class="border-r">
+          <div
+            class="font-body text-[13px] sm:text-[13.5px] tracking-tight text-fg-soft mb-3 font-semibold leading-none whitespace-nowrap h-[14px] flex items-center"
+          >
+            Median price - House
+          </div>
+          <div
+            class="font-display font-extrabold text-[clamp(22px,5.5vw,34px)] tracking-[-0.03em] leading-none flex items-end min-h-[40px] min-w-0 max-w-full whitespace-nowrap"
+          >
+            <span class="inline-block"
+              ><span
+                class="text-[0.5em] font-bold text-fg-mute align-top mr-0.5 relative top-[0.15em]"
+                >$</span
+              >392,000</span
+            >
+          </div>
+        </div>
+        <div>
+          <div
+            class="font-body text-[13px] sm:text-[13.5px] tracking-tight text-fg-soft mb-3 font-semibold leading-none whitespace-nowrap h-[14px] flex items-center"
+          >
+            Median price - Condo
+          </div>
+          <div
+            class="font-display font-extrabold text-[clamp(22px,5.5vw,34px)] tracking-[-0.03em] leading-none flex items-end min-h-[40px] min-w-0 max-w-full whitespace-nowrap"
+          >
+            <span class="inline-block"
+              ><span
+                class="text-[0.5em] font-bold text-fg-mute align-top mr-0.5 relative top-[0.15em]"
+                >$</span
+              >209,000</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer
+        class="dark-bar relative bg-surface-2 text-[#f7f4f0] px-6 sm:px-10 py-5 sm:py-6"
+      >
+        <div class="flex items-center gap-4">
+          <img
+            class="w-14 h-14 rounded-full object-cover shrink-0 border-2 border-line"
+            alt="Scott Scharl"
+            src="/profile.png"
+          />
+          <div class="min-w-0">
+            <div
+              class="font-display font-bold text-[18px] tracking-[-0.01em] leading-tight mb-1.5"
+            >
+              Scott Scharl
+            </div>
+            <div class="text-[13px] text-[#c4d2e0] leading-tight">
+              Realtor · Keller Williams Metro · Royal Oak
+            </div>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5">
+              <a
+                href="tel:2485562179"
+                class="flex items-center gap-1.5 text-[13px] text-[#c4d2e0] no-underline hover:text-white transition-colors"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="shrink-0 text-kw"
+                  ><path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                  ></path></svg
+                >248-556-2179</a
+              >
+              <a
+                href="mailto:hello@scottscharl.com"
+                class="flex items-center gap-1.5 text-[13px] text-[#c4d2e0] no-underline hover:text-white transition-colors"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="shrink-0 text-kw"
+                  ><rect width="20" height="16" x="2" y="4" rx="2"></rect><path
+                    d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"
+                  ></path></svg
+                >hello@scottscharl.com</a
+              >
+            </div>
+          </div>
+          <a
+            href="mailto:hello@scottscharl.com?subject=Home%20value%20for%20my%20street"
+            class="cta-print-hide hidden sm:inline-block ml-auto self-center font-display font-semibold text-[14px] bg-kw text-white no-underline px-5 py-3 rounded whitespace-nowrap transition-[background,transform] duration-150 hover:bg-kw-hover hover:-translate-y-px focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-kw-hover focus-visible:outline-offset-[3px]"
+            >Get my home's value →</a
+          >
+        </div>
+        <a
+          href="mailto:hello@scottscharl.com?subject=Home%20value%20for%20my%20street"
+          class="cta-print-hide sm:hidden block mt-4 font-display font-semibold text-[15px] bg-kw text-white no-underline px-6 py-3 rounded whitespace-nowrap text-center transition-[background,transform] duration-150 hover:bg-kw-hover"
+          >Get my home's value →</a
+        >
+      </footer>
+
+      <div
+        class="font-body text-[9px] sm:text-[9.5px] text-fg-mute tracking-normal px-6 sm:px-10 py-3.5 border-t border-line leading-relaxed"
+      >
+        <div>
+          Keller Williams Metro · 423 S. Washington Ave, Royal Oak, MI 48067 ·
+          Each office is independently owned and operated.
+        </div>
+        <div class="mt-1">
+          Source: GreaterMLS closed sales, Royal Oak · Apr 11 – Jul 10, 2026.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
