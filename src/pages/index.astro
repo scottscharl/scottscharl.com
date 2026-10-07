@@ -3,6 +3,10 @@ import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
 import CtaBanner from "../components/CtaBanner.astro";
 import { agent, contactCta, priceCta, services, reviews } from "../data/site";
+import { Picture } from "astro:assets";
+import park from "../assets/photos/neighborhood-park.jpg";
+import truck from "../assets/photos/food-truck-window.jpg";
+import welcome from "../assets/photos/welcome-neighbors.jpg";
 ---
 
 <Base
@@ -38,6 +42,53 @@ import { agent, contactCta, priceCta, services, reviews } from "../data/site";
           {priceCta.label}
           <Icon name="arrow" class="h-4 w-4 text-brand" />
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Neighborhood photos -->
+  <section class="border-t border-rule">
+    <div class="container-px mx-auto max-w-6xl py-16 sm:py-20">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Love where you live.</h2>
+        <p class="mt-4 text-lg leading-relaxed text-muted">
+          Royal Oak is home. This summer I hosted a food truck night for my neighbors, and it's still one of my
+          favorite days on the job.
+        </p>
+      </div>
+      <div class="mt-10 grid gap-3 sm:gap-4 md:grid-cols-3">
+        <div class="md:col-span-2 md:row-span-2">
+          <Picture
+            src={park}
+            formats={["avif", "webp"]}
+            widths={[600, 900, 1200, 1800]}
+            sizes="(min-width: 768px) 66vw, 100vw"
+            alt="Neighbors gathered in a Royal Oak pocket park on a summer evening, with a food truck parked on the street"
+            class="aspect-[3/2] h-full w-full rounded-2xl object-cover md:aspect-auto"
+            pictureAttributes={{ class: "block h-full" }}
+            loading="lazy"
+          />
+        </div>
+        <Picture
+          src={truck}
+          formats={["avif", "webp"]}
+          widths={[400, 600, 900]}
+          sizes="(min-width: 768px) 33vw, 100vw"
+          alt="A dad and his daughter ordering at a mint-green food truck on a tree-lined street"
+          class="aspect-[3/2] w-full rounded-2xl object-cover"
+          pictureAttributes={{ class: "block" }}
+          loading="lazy"
+        />
+        <Picture
+          src={welcome}
+          formats={["avif", "webp"]}
+          widths={[400, 600, 900]}
+          sizes="(min-width: 768px) 33vw, 100vw"
+          alt="A hand-lettered “Welcome, Neighbors!” sign taped to a wooden post in the park"
+          class="aspect-[3/2] w-full rounded-2xl object-cover"
+          pictureAttributes={{ class: "block" }}
+          loading="lazy"
+        />
       </div>
     </div>
   </section>
