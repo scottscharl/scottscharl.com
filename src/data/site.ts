@@ -95,7 +95,7 @@ export const services: Service[] = [
     title: "Investors",
     icon: "trend",
     href: "/contact?topic=Investing",
-    linkLabel: "Contact Scott",
+    linkLabel: "Get off-market properties",
     short: "Off-market deals that fit your buy box.",
     points: [
       "Rent comparables and local rental demand",
