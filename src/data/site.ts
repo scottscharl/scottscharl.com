@@ -83,7 +83,7 @@ export const services: Service[] = [
     title: "Renters",
     icon: "key",
     href: "/contact?topic=Renting",
-    linkLabel: "Live where you love",
+    linkLabel: "Love where you live",
     short: "Move into an area you love!",
     points: [
       "Rentals matched to your budget, location and move-in date",
