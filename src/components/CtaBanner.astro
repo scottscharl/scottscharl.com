@@ -1,0 +1,29 @@
+---
+import Icon from "./Icon.astro";
+import { agent, contactCta } from "../data/site";
+
+interface Props {
+  title?: string;
+}
+const { title = "Thinking about a move?" } = Astro.props;
+---
+
+<section class="border-t border-rule bg-sand">
+  <div class="container-px mx-auto max-w-6xl py-16 text-center sm:py-20">
+    <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h2>
+    <p class="mx-auto mt-4 max-w-xl text-lg text-muted">
+      I'm happy to talk it through, no pressure. I'll get back to you as soon as I can.
+    </p>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+      <a
+        href={contactCta.href}
+        class="rounded-full bg-brand px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
+        >{contactCta.label}</a
+      >
+      <a href={agent.sms} class="inline-flex items-center gap-2 text-sm font-semibold hover:text-brand">
+        <Icon name="message" class="h-4 w-4 text-brand" />
+        Or text {agent.phoneDisplay}
+      </a>
+    </div>
+  </div>
+</section>

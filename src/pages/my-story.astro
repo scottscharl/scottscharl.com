@@ -1,0 +1,50 @@
+---
+import Base from "../layouts/Base.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+import { agent } from "../data/site";
+---
+
+<Base
+  title="My Story | Scott Scharl — Keller Williams Metro"
+  description="How Scott Scharl went from Troy to Phoenix real estate and back home to Metro Detroit, now a REALTOR® with Keller Williams Metro in Royal Oak."
+>
+  <section class="container-px mx-auto max-w-6xl py-16 sm:py-24">
+    <div class="mx-auto max-w-3xl">
+      <img
+        src={agent.photo}
+        alt={agent.name}
+        class="mx-auto h-32 w-32 rounded-full bg-sand object-cover"
+        width="128"
+        height="128"
+      />
+      <h1 class="mt-8 text-center text-4xl font-semibold tracking-tight sm:text-5xl">My story</h1>
+      <div class="mt-8 space-y-5 text-lg leading-relaxed text-ink/80">
+        <p>
+          I'm a REALTOR® with {agent.brokerage} in downtown Royal Oak. I grew up in Troy and, after a decade out
+          west, I'm back home in Metro Detroit for good.
+        </p>
+        <p>
+          Real estate isn't new to me. From 2015 to 2019 I sold properties in the Phoenix area, working on
+          everything from modest starter homes and condos to investor properties, rentals and million-dollar luxury.
+          I moved back to Michigan in the fall of 2022, and my wife and I are now proud homeowners in Royal Oak,
+          about two miles from the hospital where I was born. I've
+          loved reconnecting with family and friends and seeing how much the area has grown.
+        </p>
+        <p>
+          Real estate is a personal business, and I've always done my best work with people I share a connection
+          with. I recently showed an investor property in Pontiac and a luxury apartment in Detroit's historic
+          Broderick Tower back to back, at opposite ends of Woodward Avenue. Both clients turned out to have grown up
+          within a mile and a half of me in Troy.
+        </p>
+        <p>
+          If you read a puzzling market headline, need a good contractor, or just have a question,
+          <a href="/contact" class="font-semibold text-brand underline underline-offset-4 hover:text-brand-dark"
+            >contact me</a
+          >. I'm always happy to help.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner title="Let's talk." />
+</Base>

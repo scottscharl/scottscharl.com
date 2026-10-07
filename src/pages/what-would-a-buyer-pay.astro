@@ -1,0 +1,183 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import { agent, leadsEndpoint } from "../data/site";
+
+const field =
+  "mt-1.5 w-full rounded-lg border border-rule bg-card px-3.5 py-2.5 text-base outline-none focus:border-ink focus:ring-2 focus:ring-ink/10";
+
+const steps = [
+  {
+    title: "Tell me about your house",
+    body: "The address and anything a buyer should know. It takes about two minutes.",
+  },
+  {
+    title: "I study your market",
+    body: "What's sold near you lately, what you'd be competing with today, and what sets your house apart.",
+  },
+  {
+    title: "You get an honest number",
+    body: "A realistic price range and the sales behind it, usually within a day or two.",
+  },
+];
+---
+
+<Base
+  title="Find out what a buyer would pay for your house | Scott Scharl"
+  description="Find out what a buyer would realistically pay for your Metro Detroit house. Free, with no obligation to sell, from Scott Scharl, REALTOR® with Keller Williams Metro."
+>
+  <section class="container-px mx-auto max-w-6xl py-16 sm:py-24">
+    <div class="mx-auto max-w-2xl text-center">
+      <h1 class="text-4xl font-semibold leading-tight tracking-tight text-balance sm:text-5xl">
+        Find out what a buyer would pay for your house.
+      </h1>
+      <p class="mt-5 text-lg leading-relaxed text-muted">
+        Online estimates guess from a distance. I'll look at your house, your street and today's buyers, then
+        tell you what someone would realistically pay. It's free, and there's no obligation to sell.
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-12 lg:grid-cols-12">
+      <!-- How it works -->
+      <ol class="space-y-8 lg:col-span-5">
+        {
+          steps.map((s, i) => (
+            <li class="flex gap-4">
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand/10 text-sm font-semibold text-brand">
+                {i + 1}
+              </span>
+              <div>
+                <h2 class="font-semibold">{s.title}</h2>
+                <p class="mt-1 text-muted">{s.body}</p>
+              </div>
+            </li>
+          ))
+        }
+        <li class="border-t border-rule pt-8 text-sm text-muted">
+          Rather talk it through? <a href={agent.sms} class="font-semibold text-ink hover:text-brand"
+            >Text me at {agent.phoneDisplay}</a
+          >.
+        </li>
+      </ol>
+
+      <!-- Form (first on phones, right column on desktop) -->
+      <div class="order-first lg:order-none lg:col-span-7">
+        <div id="form-sent" class="hidden rounded-2xl border border-rule bg-card p-8" role="status">
+          <h2 class="text-2xl font-semibold tracking-tight">Thanks — I'm on it.</h2>
+          <p class="mt-2 text-muted">
+            I'll take a close look and get back to you within a day or two. If I have a quick question about
+            the house, I'll reach out.
+          </p>
+        </div>
+
+        <form
+          id="price-form"
+          method="post"
+          action={leadsEndpoint}
+          class="space-y-5 rounded-2xl border border-rule bg-card p-6 shadow-sm sm:p-8"
+        >
+          <label class="block text-sm font-medium"
+            >Property address<input
+              name="address"
+              required
+              autocomplete="street-address"
+              placeholder="123 Main St, Royal Oak"
+              class={field}
+            /></label
+          >
+          <div class="grid gap-5 sm:grid-cols-2">
+            <label class="block text-sm font-medium"
+              >Your name<input name="name" required autocomplete="name" class={field} /></label
+            >
+            <label class="block text-sm font-medium"
+              >Best phone or email<input name="contact" required autocomplete="email" class={field} /></label
+            >
+          </div>
+          <label class="block text-sm font-medium">
+            Thinking about selling?
+            <select name="timeline" class={field}>
+              <option>Just curious</option>
+              <option>In the next 6 months</option>
+              <option>In 6–12 months</option>
+              <option>Not sure yet</option>
+            </select>
+          </label>
+          <label class="block text-sm font-medium">
+            Anything a buyer should know? <span class="font-normal text-muted">(optional)</span>
+            <textarea
+              name="message"
+              rows="3"
+              placeholder="Updates, projects, quirks…"
+              class={field}></textarea>
+          </label>
+
+          <!-- Spam trap: hidden from people, filled in by bots. -->
+          <div class="hidden" aria-hidden="true">
+            <label>Company<input name="company" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          <input type="hidden" name="topic" value="Selling" />
+          <input type="hidden" name="source" />
+          <input type="hidden" name="form" value="price" />
+          <input type="hidden" name="t" />
+          <input type="hidden" name="page" />
+
+          <p id="form-error" class="hidden rounded-lg bg-brand/10 px-4 py-3 text-sm" role="alert">
+            Sorry, that didn't go through. Please text me at
+            <a href={agent.sms} class="font-semibold underline">{agent.phoneDisplay}</a> instead.
+          </p>
+
+          <button
+            type="submit"
+            class="w-full rounded-full bg-brand px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
+            >Find out what a buyer would pay</button
+          >
+          <p class="text-xs leading-relaxed text-muted">
+            Free, with no obligation to list. This is my opinion of market price as a licensed REALTOR®, not an
+            appraisal.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const form = document.getElementById("price-form") as HTMLFormElement;
+    const sent = document.getElementById("form-sent")!;
+    const error = document.getElementById("form-error")!;
+    const button = form.querySelector("button")!;
+    const label = button.textContent;
+    const params = new URLSearchParams(location.search);
+
+    const showSent = () => {
+      form.classList.add("hidden");
+      sent.classList.remove("hidden");
+    };
+
+    // Where the lead came from, e.g. ?src=postcard-oct
+    (form.elements.namedItem("source") as HTMLInputElement).value = params.get("src") ?? document.referrer;
+    (form.elements.namedItem("t") as HTMLInputElement).value = String(Date.now());
+    (form.elements.namedItem("page") as HTMLInputElement).value = location.pathname;
+    if (params.has("sent")) showSent();
+    if (params.has("error")) error.classList.remove("hidden");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      error.classList.add("hidden");
+      button.disabled = true;
+      button.textContent = "Sending…";
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        showSent();
+      } catch {
+        error.classList.remove("hidden");
+        button.disabled = false;
+        button.textContent = label;
+      }
+    });
+  </script>
+</Base>
