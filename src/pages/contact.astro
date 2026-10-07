@@ -103,6 +103,15 @@ const field =
     const topic = form.elements.namedItem("topic") as HTMLSelectElement;
     const preset = params.get("topic");
     if (preset && [...topic.options].some((o) => o.value === preset)) topic.value = preset;
+
+    // Start the message for them, based on the box they clicked. They can edit or clear it.
+    const starters: Record<string, string> = {
+      Buying: "I'm thinking about buying and would love to talk.",
+      Renting: "I'm looking for a rental and would love some help.",
+      Investing: "I'd love to hear about off-market properties. My buy box: ",
+    };
+    const message = form.elements.namedItem("message") as HTMLTextAreaElement;
+    if (preset && starters[preset] && !message.value) message.value = starters[preset];
     (form.elements.namedItem("t") as HTMLInputElement).value = String(Date.now());
     (form.elements.namedItem("page") as HTMLInputElement).value = location.pathname;
     if (params.has("sent")) showSent();

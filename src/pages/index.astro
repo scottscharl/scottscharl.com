@@ -10,19 +10,14 @@ import { agent, contactCta, priceCta, services, reviews } from "../data/site";
   description="Scott Scharl, REALTOR® with Keller Williams Metro in Royal Oak, helps buyers, sellers and renters across Metro Detroit."
 >
   <!-- Hero -->
-  <section class="relative overflow-hidden bg-linear-to-b from-sand to-paper">
-    <div
-      class="pointer-events-none absolute left-1/2 top-24 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-brand/5 blur-3xl"
-      aria-hidden="true"
-    >
-    </div>
+  <section class="relative overflow-hidden">
     <div
       class="container-px relative mx-auto flex min-h-[78svh] max-w-4xl flex-col items-center justify-center py-20 text-center sm:py-28"
     >
       <img
         src={agent.photo}
         alt={agent.name}
-        class="h-44 w-44 rounded-full bg-sand object-cover shadow-xl shadow-ink/10 sm:h-52 sm:w-52"
+        class="h-44 w-44 rounded-full bg-stone-100 object-cover shadow-lg shadow-black/10 sm:h-52 sm:w-52"
         width="208"
         height="208"
         fetchpriority="high"
