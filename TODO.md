@@ -6,6 +6,9 @@
 - [ ] Add your client reviews — `reviews` in `src/data/site.ts` (reviews section stays hidden until it has entries)
 - [ ] Replace `public/profile.png` with a larger portrait (currently 400×400, soft in the hero)
 
+## Cleanup after events
+- [ ] After Pumpkinfest (Oct 10, 2026): delete `src/components/PumpkinfestBar.astro` and its line in `src/layouts/Base.astro`. The bar already hides itself from Oct 11, so this is just tidying
+
 ## Hidden for now
 - [ ] Bring back Services when ready: rename `src/pages/_services.astro` (drop the `_`) and add it to `nav` in `src/data/site.ts`
 - [ ] Decide whether Market Report goes back in the menu (the page still works at `/market-report`)

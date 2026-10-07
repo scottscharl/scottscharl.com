@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Icon from "../components/Icon.astro";
+import PumpkinfestBar from "../components/PumpkinfestBar.astro";
 import { agent, contactCta, nav } from "../data/site";
 
 interface Props {
@@ -106,6 +107,8 @@ const schema = {
         </div>
       </nav>
     </header>
+
+    <PumpkinfestBar />
 
     <main id="main-content" class="flex-1">
       <slot />

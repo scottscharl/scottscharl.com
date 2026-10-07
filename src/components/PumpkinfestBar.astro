@@ -1,0 +1,34 @@
+---
+// Pumpkinfest announcement (Sat Oct 10, 2026). Disappears on its own from
+// midnight Detroit time, Sun Oct 11: builds after that leave it out, and the
+// inline script removes it from pages built earlier. Delete this file (and its
+// line in Base.astro) any time after the event.
+const EXPIRES = "2026-10-11T00:00:00-04:00";
+const show = Date.now() < Date.parse(EXPIRES);
+const href = "https://go.scharl.dev/pumpkinfest?utm_source=website";
+---
+
+{
+  show && (
+    <div id="pumpkinfest-bar" data-expires={EXPIRES} class="border-b border-[#f3c9a6] bg-[#fdeee2]">
+      <a
+        href={href}
+        class="container-px mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-2 gap-y-0.5 py-2.5 text-center text-sm text-ink hover:underline"
+      >
+        <span class="font-semibold">Pumpkinfest · Sat, Oct 10 · 11am–1pm</span>
+        <span class="text-ink/75">Starr Jaycee Park, Royal Oak. Pumpkins, family photos, train rides, cider & donuts.</span>
+        <span class="font-semibold text-[#b5470c]">Register free →</span>
+      </a>
+    </div>
+  )
+}
+{
+  show && (
+    <script is:inline>
+      (function () {
+        var bar = document.getElementById("pumpkinfest-bar");
+        if (bar && Date.now() >= Date.parse(bar.dataset.expires)) bar.remove();
+      })();
+    </script>
+  )
+}
