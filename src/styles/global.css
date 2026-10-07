@@ -83,3 +83,11 @@
     animation: none !important;
   }
 }
+
+/* Tailwind v4 dropped the pointer cursor on buttons; bring it back. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
