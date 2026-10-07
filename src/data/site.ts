@@ -70,7 +70,7 @@ export const services: Service[] = [
     title: "Buyers",
     icon: "home",
     href: "/contact?topic=Buying",
-    linkLabel: "Contact Scott",
+    linkLabel: "Find a place that's yours to keep",
     short: "Honest guidance and strong negotiation.",
     points: [
       "A plan built around your budget, timeline and must-haves",
@@ -83,7 +83,7 @@ export const services: Service[] = [
     title: "Renters",
     icon: "key",
     href: "/contact?topic=Renting",
-    linkLabel: "Contact Scott",
+    linkLabel: "Find a rental that feels like home",
     short: "Move into an area you love!",
     points: [
       "Rentals matched to your budget, location and move-in date",
