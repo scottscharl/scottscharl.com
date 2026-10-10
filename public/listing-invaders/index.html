@@ -1,0 +1,1609 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <title>Listing Invaders | Scott Scharl</title>
+    <meta
+      name="description"
+      content="A quick arcade game about selling a house: prep it, list it, survive inspection and the appraisal. From Scott Scharl, REALTOR® with Keller Williams Metro."
+    />
+    <meta property="og:title" content="Listing Invaders" />
+    <meta
+      property="og:description"
+      content="Can you get your house from pre-listing to SOLD? A one-minute game from Scott Scharl."
+    />
+    <meta property="og:url" content="https://scottscharl.com/listing-invaders/" />
+    <meta property="og:type" content="website" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #0b1020;
+        overflow: hidden;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        color: #fff;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      #game {
+        position: relative;
+        width: min(100vw, 60dvh);
+        aspect-ratio: 3 / 5;
+        container-type: inline-size;
+      }
+      canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        background: #141b33;
+      }
+      #overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        text-align: center;
+        padding: 24px;
+        box-sizing: border-box;
+        background: rgba(11, 16, 32, 0.95);
+        overflow-y: auto;
+        font-kerning: normal;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+      #overlay[hidden] {
+        display: none;
+      }
+      #overlay h1 {
+        margin: 0;
+        font-size: 34px;
+        color: #ffd166;
+      }
+      #overlay p {
+        margin: 0;
+        font-size: 18px;
+        line-height: 1.35;
+      }
+      #overlay .small {
+        font-size: 13px;
+        color: #8a93b8;
+      }
+      #overlay a,
+      #overlay button {
+        font: inherit;
+        font-size: 18px;
+        font-weight: 600;
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: 0;
+        cursor: pointer;
+        text-decoration: none;
+        color: #fff;
+        background: #2a3560;
+      }
+      #overlay a {
+        color: #0b1020;
+        background: #ffd166;
+      }
+
+      /* End screen */
+      #overlay .sign {
+        margin: 0 0 4px;
+        padding: 0.08em 0.35em 0.12em;
+        background: #d62828;
+        color: #fff;
+        border: 6px solid #fff;
+        border-radius: 10px;
+        transform: rotate(-4deg);
+        font-size: clamp(48px, 19cqw, 110px);
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: 0.06em;
+        box-shadow: 0 10px 0 rgba(0, 0, 0, 0.35);
+      }
+      #overlay .sign.expired {
+        background: #2a3560;
+        font-size: clamp(30px, 10cqw, 56px);
+        letter-spacing: 0.02em;
+      }
+      #overlay .price {
+        font-size: clamp(40px, 14cqw, 72px);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        font-variant-numeric: lining-nums;
+      }
+      #overlay .over {
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: #1f7a3a;
+        color: #fff;
+        font-size: clamp(17px, 5.5cqw, 24px);
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+      #overlay .over {
+        white-space: nowrap;
+      }
+      #overlay .over.under {
+        background: #7a2a1f;
+      }
+      #overlay .pitch {
+        margin-top: 10px;
+        font-size: clamp(18px, 5.5cqw, 22px);
+        font-weight: 600;
+        line-height: 1.3;
+        max-width: 16em;
+      }
+      #overlay a.cta {
+        font-size: clamp(19px, 6cqw, 24px);
+        font-weight: 800;
+        padding: 16px 26px;
+        letter-spacing: 0.01em;
+      }
+      #overlay .dom {
+        font-size: clamp(15px, 4.6cqw, 18px);
+        color: #c9cfe6;
+      }
+      #overlay .net {
+        font-size: clamp(15px, 4.6cqw, 18px);
+        font-weight: 600;
+        color: #ffb347;
+      }
+      #overlay .kicker {
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        color: #ffb347;
+      }
+      #overlay h2 {
+        margin: 0;
+        font-size: clamp(24px, 8cqw, 32px);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+      }
+      #overlay button.choice {
+        display: block;
+        width: min(100%, 320px);
+        line-height: 1.25;
+      }
+      #overlay button.choice.give {
+        background: #ffb347;
+        color: #0b1020;
+      }
+      #overlay button.choice small {
+        display: block;
+        margin-top: 3px;
+        font-size: 14px;
+        font-weight: 500;
+        opacity: 0.85;
+      }
+      #overlay .face {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #fff;
+        border: 2px solid #ffd166;
+        flex: none;
+      }
+      #overlay .face.big {
+        width: 64px;
+        height: 64px;
+      }
+      #overlay a.cta.with-face {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 7px 26px 7px 7px;
+        border-radius: 999px;
+      }
+      #overlay a.cta.with-face .face {
+        width: 46px;
+        height: 46px;
+        border-color: #0b1020;
+      }
+      #overlay .agent {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-align: left;
+        font-size: 16px;
+      }
+      #overlay .logo {
+        display: block;
+        height: 22px;
+        width: auto;
+      }
+      #overlay .agent .logo {
+        margin-top: 6px;
+      }
+      #overlay button.again {
+        background: none;
+        color: #8a93b8;
+        text-decoration: underline;
+        padding: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game">
+      <canvas id="c"></canvas>
+      <div id="overlay"></div>
+    </div>
+    <script>
+      // ---- Edit these -----------------------------------------------------------
+      const CONFIG = {
+        agent: "Scott",
+        agentFullName: "Scott Scharl",
+        headshot: "scott-headshot.png",
+        logo: "kw-metro-white.png", // white logo, for the dark background
+        brokerage: "KW Metro Royal Oak",
+        ctaUrl: "https://scottscharl.com/contact", // losing screen
+        valueUrl: "https://scottscharl.com/what-would-a-buyer-pay", // SOLD screen: matches "what would a buyer pay"
+        listPrice: 350000, // median sale price
+        // Buyer's market: first offers come in below list, and a typical sale lands around 95%
+        openingOffer: 0.92,
+        typicalRatio: 95,
+      };
+
+      // Realistic scoring, as fractions of list price. A perfect run ends around 105% of list.
+      const roundTo250 = (n) => Math.round(n / 250) * 250;
+      const THREAT_VALUE = Math.round(CONFIG.listPrice * 0.00065); // each threat stopped (~$225)
+      const HIT_COST = roundTo250(CONFIG.listPrice * 0.007); // a buyer walks (~$2,500)
+      const INSPECTION_HIT_COST = roundTo250(CONFIG.listPrice * 0.01);
+      const REPAIR_COST = roundTo250(CONFIG.listPrice * 0.008);
+      const START_BUYERS = 4; // lives
+      const HIT_DAYS = 3; // setbacks also add days on market
+      // Days on market adjust the final price
+      const DOM_ADJUST = [
+        { max: 9, f: 0.01, text: "Hot listing! +1%" },
+        { max: 30, f: 0 },
+        { max: 45, f: -0.015, text: "Price reduction −1.5%" },
+        { max: Infinity, f: -0.03, text: "Stale listing −3%" },
+      ];
+      // Everything is from the seller's side: power-ups are things that help the seller.
+      // Four stages: Pre-listing -> Listed for sale -> Under contract (inspection) -> Under contract (appraisal).
+      // Each stage drops its own power-ups, with one signature effect per stage:
+      // Pre-listing sweep, Listed slow/magnet/pierce/twin/immune + cash offer, Inspection fix, Appraisal freeze.
+      // No power-up adds dollars directly. Concessions (gold) cost the seller money but save
+      // the deal; they're tracked separately and shown as a net on the SOLD screen.
+      const ROUNDS = [
+        {
+          icon: "🧹",
+          label: "Pre-listing",
+          short: "Pre",
+          bar: "Pre-listing",
+          clear: "Listed!",
+          bg: "#141b33",
+          rows: ["🗑️", "🕸️", "🗑️", "🕸️"],
+          powerups: [
+            { icon: "🧹", kind: "sweep", text: "Swept clean!" },
+            { icon: "🧽", kind: "rapid", text: "Professional cleaning!" },
+            { icon: "🖌️", kind: "shield", text: "Fresh coat of paint!" },
+            { icon: "🧶", kind: "life", text: "New carpet!" },
+            { icon: "📸", kind: "shotgun", text: "Professional photos!" },
+          ],
+        },
+        // Showings and offers both happen while the house is listed
+        {
+          icon: "🪧",
+          label: "Listed for sale",
+          short: "Listed",
+          bar: "Listed for sale",
+          clear: "Under contract!",
+          bg: "#1f1636",
+          rows: ["🧐", "🧐", "🤏", "🤏"], // picky buyers, lowball offers
+          // If the showings stall (threats this far down with plenty left), offer a price reduction once
+          reduction: { atY: 380, minLeft: 8, cuts: [10000, 20000] },
+          dropChance: 0.15,
+          curses: [
+            {
+              icon: "👀",
+              kind: "lookyloo",
+              secs: 4,
+              days: 2,
+              text: "Looky-loo wasting your time!",
+            },
+            {
+              icon: "🚪",
+              kind: "sellerhome",
+              secs: 3,
+              days: 1,
+              text: "Seller stayed home!",
+            },
+            {
+              icon: "🤏",
+              kind: "lowball",
+              secs: 4,
+              days: 2,
+              text: "Lowball offer!",
+            },
+          ],
+          powerups: [
+            { icon: "🏠", kind: "slow", text: "Open house!" },
+            { icon: "⚡", kind: "rapid", text: "Hot market!" },
+            { icon: "🛡️", kind: "shield", text: "Pre-approved buyer!" },
+            { icon: "🙋", kind: "life", text: "Second showing!" },
+            { icon: "📦", kind: "shotgun", text: "Decluttered!" },
+            { icon: "🍪", kind: "magnet", text: "Fresh-baked cookies!" },
+            { icon: "💡", kind: "pierce", text: "Every light on!" },
+            { icon: "🐕", kind: "immune", text: "Pets out of the house!" },
+            { icon: "🔑", kind: "twin", text: "Easy lockbox access!" },
+            { icon: "🌷", kind: "life", text: "Curb appeal!" },
+            { icon: "🕯️", kind: "shield", text: "Smells like home!" },
+            { icon: "🎵", kind: "slow", text: "Soft music playing!" },
+            { icon: "📅", kind: "rapid", text: "Back-to-back showings!" },
+            { icon: "💥", kind: "shotgun", text: "Multiple offers!" },
+            { icon: "💰", kind: "cash", text: "Cash offer!" },
+            { icon: "📝", kind: "rapid", text: "Counteroffer!" },
+          ],
+        },
+        // Under contract: offers open below list here (buyer's market). Tough threats, pricier hits, bad drops.
+        {
+          icon: "🔍",
+          label: "Home inspection",
+          kicker: "UNDER CONTRACT",
+          short: "Inspect",
+          bar: "Under contract: inspection",
+          clear: "Inspection passed!",
+          bg: "#122620",
+          opening: true,
+          rows: ["🏚️", "🐜", "🍄", "💧"],
+          hp: [3, 2, 2, 1], // roof, termites, mold, plumbing leaks
+          hitCost: INSPECTION_HIT_COST,
+          bombEvery: 1.5,
+          curses: "inspection",
+          powerups: [
+            { icon: "🔨", kind: "fix", text: "Handyman on call!" },
+            { icon: "🙌", kind: "rapid", text: "Clean inspection report!" },
+            { icon: "🤝", kind: "shield", text: "Earnest money deposit!" },
+            {
+              icon: "🧰",
+              kind: "concession",
+              cost: 3000,
+              does: "fix",
+              text: "Repair credit −$3,000",
+            },
+            {
+              icon: "🏷️",
+              kind: "concession",
+              cost: 4000,
+              does: "rescue",
+              text: "Closing cost credit −$4,000",
+            },
+            { icon: "📋", kind: "shield", text: "Home warranty!" },
+            { icon: "❤️", kind: "life", text: "Backup offer!" },
+          ],
+        },
+        // Final boss: prove the value. The bar is the appraised value; it starts below the
+        // contract price and every hit (and every strong comp) pushes it up to the contract.
+        {
+          icon: "🏦",
+          label: "Appraisal",
+          kicker: "UNDER CONTRACT · FINAL BOSS",
+          note: "Push the appraisal up to your contract price",
+          short: "Appraisal",
+          bar: "Under contract: appraisal",
+          clear: "Clear to close!",
+          bg: "#2b0f16",
+          boss: { name: "APPRAISAL", hp: 30, startGap: 0.1 },
+          bombEvery: 1.6,
+          curses: [
+            { icon: "📉", kind: "lowcomp", text: "Low comp!" },
+            { icon: "⏳", kind: "delay", days: 3, text: "Closing delayed!" },
+          ],
+          powerups: [
+            { icon: "📊", kind: "comp", text: "Strong comps!" },
+            { icon: "📞", kind: "freeze", secs: 4, text: "Called the lender!" },
+            { icon: "📜", kind: "shield", text: "Clear title!" },
+            { icon: "✒️", kind: "shotgun", text: "Docs signed!" },
+            { icon: "❤️", kind: "life", text: "Backup offer!" },
+          ],
+        },
+      ];
+      const DROP_CHANCE = 0.09,
+        POWER_SECONDS = 8,
+        INTRO_SECONDS = 2.2,
+        CELEB_SECONDS = 1.6,
+        INTRO_HOLD = 0.3;
+      const SECONDS_PER_DAY = 5; // days on market tick up once the house is listed (a good game: ~7–20 days)
+      // Bad drops for the inspection stage. They glow red. Dodge them.
+      // (Other stages can list their own under `curses` in ROUNDS.)
+      const CURSES = [
+        { icon: "🍄", kind: "mold", text: "Mold found!", secs: 5 },
+        { icon: "🐜", kind: "termites", text: "Termites found!", secs: 4 },
+        { icon: "🔌", kind: "wiring", text: "Old wiring found!", secs: 2 },
+        {
+          icon: "🧾",
+          kind: "repair",
+          text: "Repair request −$" + REPAIR_COST.toLocaleString("en-US"),
+        },
+      ];
+      const CURSE_CHANCE = 0.15;
+      // ---------------------------------------------------------------------------
+
+      const W = 360,
+        H = 600,
+        PLAYER_Y = 500,
+        FLYER_Y = 126;
+      const HUD_Y = 34,
+        BAR_Y = 56,
+        BAR_H = 28,
+        FIELD_TOP = 106; // top bar layout; threats start at FIELD_TOP
+      const canvas = document.getElementById("c"),
+        overlay = document.getElementById("overlay");
+      const ctx = canvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.scale(dpr, dpr);
+      ctx.textBaseline = "middle";
+
+      let playing = false,
+        started = false,
+        round = 0,
+        price = CONFIG.listPrice,
+        lives = START_BUYERS;
+      let px = W / 2,
+        dir = 1,
+        safe = 0,
+        fireT = 0,
+        bombT = 0;
+      let threats = [],
+        shots = [],
+        bombs = [],
+        keys = {},
+        ptrDown = false;
+      let introT = 0,
+        drops = [],
+        sparks = [],
+        power = null,
+        powerT = 0,
+        banner = "",
+        bannerT = 0,
+        flashT = 0,
+        shake = 0;
+      let curse = null,
+        curseT = 0,
+        bannerBad = false,
+        powerIcon = "";
+      let cardTapped = false;
+      let celebT = 0,
+        celebSub = "",
+        confetti = [],
+        dom = 0,
+        curseIcon = "",
+        aimX = null,
+        offersOpened = false;
+      let bossContract = 0;
+      let credits = 0,
+        deciding = false,
+        banner2 = "",
+        reductionOffered = false;
+      let flyer = null,
+        flyerT = 0;
+
+      const money = (n) =>
+        "$" + Math.abs(Math.round(n)).toLocaleString("en-US");
+
+      // Fires Meta Pixel events once a pixel snippet is added to <head>.
+      function track(name) {
+        if (window.fbq)
+          window.fbq(name === "Lead" ? "track" : "trackCustom", name);
+      }
+
+      function show(html) {
+        overlay.innerHTML = html;
+        overlay.hidden = false;
+      }
+
+      function startRound() {
+        const rd = ROUNDS[round];
+        // Once offers start, the market resets the price: offers open below list
+        if (!offersOpened && round >= ROUNDS.findIndex((r) => r.opening)) {
+          offersOpened = true;
+          price -= CONFIG.listPrice * (1 - CONFIG.openingOffer);
+        }
+        threats = [];
+        if (rd.boss) bossContract = price;
+        if (rd.boss)
+          threats.push({
+            x: W / 2,
+            y: FIELD_TOP + 82,
+            icon: rd.icon,
+            hp: rd.boss.hp,
+            maxHp: rd.boss.hp,
+            boss: true,
+          });
+        else
+          for (let r = 0; r < 4; r++)
+            for (let c = 0; c < 6; c++) {
+              threats.push({
+                x: 40 + c * 48,
+                y: FIELD_TOP + r * 44,
+                icon: rd.rows ? rd.rows[r] : rd.icon,
+                hp: rd.hp ? rd.hp[r] : 1,
+              });
+            }
+        shots = [];
+        bombs = [];
+        drops = [];
+        flyer = null;
+        flyerT = 0;
+        celebSub = "";
+        dir = 1;
+        fireT = bombT = 0;
+        introT = INTRO_SECONDS;
+        cardTapped = false;
+        reductionOffered = false;
+      }
+
+      // Testing shortcut: ?stage=3 (number) or ?stage=inspect (stage name) starts there
+      const START_ROUND = (() => {
+        const v = (
+          new URLSearchParams(location.search).get("stage") || ""
+        ).toLowerCase();
+        if (!v) return 0;
+        const n = parseInt(v, 10);
+        if (n >= 1 && n <= ROUNDS.length) return n - 1;
+        const i = ROUNDS.findIndex(
+          (r) =>
+            r.short.toLowerCase().startsWith(v) ||
+            r.label.toLowerCase().startsWith(v),
+        );
+        return Math.max(0, i);
+      })();
+
+      function startGame() {
+        round = START_ROUND;
+        price = CONFIG.listPrice;
+        lives = START_BUYERS;
+        px = W / 2;
+        safe = 0;
+        offersOpened = false;
+        power = curse = null;
+        powerT = curseT = bannerT = celebT = credits = dom = 0;
+        sparks = [];
+        confetti = [];
+        deciding = false;
+        startRound();
+        playing = started = true;
+        overlay.hidden = true;
+        track("GameStart");
+      }
+
+      function endGame(sold) {
+        playing = false;
+        track("GameComplete");
+        // Final price: adjusted for days on market, then shown as a sale-to-list ratio
+        const days = Math.max(1, Math.round(dom));
+        const adj = DOM_ADJUST.find((a) => days <= a.max);
+        const final = roundTo250(price * (1 + adj.f));
+        const ratio = Math.round((final / CONFIG.listPrice) * 100);
+        // Ranks for a buyer's market: at list or better is a big win
+        const rank =
+          days > 45 || ratio < CONFIG.typicalRatio - 3
+            ? "Sold, Eventually"
+            : ratio >= 100 && days < 14
+              ? "Bidding War"
+              : ratio >= CONFIG.typicalRatio + 3
+                ? "Beat the Market"
+                : ratio >= CONFIG.typicalRatio - 1
+                  ? "Solid Sale"
+                  : "Below Market";
+        show(
+          (sold
+            ? `<div class="sign">SOLD!</div>` +
+              `<p class="kicker" style="color:#8a93b8">SALES PRICE</p><div class="price">${money(final)}</div>` +
+              `<div class="over${ratio < CONFIG.typicalRatio - 3 ? " under" : ""}">${ratio}% of list · ${days} day${days === 1 ? "" : "s"}</div>` +
+              // One line of context: rank, plus the reason if days on market moved the price
+              `<p class="dom"><b>${rank}</b> · typical is about ${CONFIG.typicalRatio}%` +
+              (adj.text
+                ? `<br><small>${adj.text}${adj.f < 0 ? ": listings that sit sell for less" : ""}</small>`
+                : "") +
+              `</p>` +
+              (credits
+                ? `<p class="net">You net ${money(final - credits)} after ${money(credits)} in concessions</p>`
+                : "") +
+              `<p class="pitch">Curious what a buyer would pay for your house?</p>` +
+              ctaRow(CONFIG.valueUrl)
+            : // Never show "expired listing" next to the agent's name: the loss is framed as a near miss
+              `<div class="sign expired">SO CLOSE!</div>` +
+              `<p class="pitch">Every sale hits a few bumps.<br>That's what I'm here for.</p>` +
+              ctaRow(CONFIG.ctaUrl)) +
+            `<button id="again" class="again">Play again</button>` +
+            `<img class="logo" src="${CONFIG.logo}" alt="${CONFIG.brokerage}">` +
+            `<p class="small">Just a game. Not an estimate of any home's value.</p>`,
+        );
+      }
+
+      // Stage cards wait for a tap; ignore taps in the first half second so the tap that
+      // started the game (or a held fire button) doesn't skip the card
+      function continueCard() {
+        if (introT > 0 && introT < INTRO_SECONDS - 0.5) {
+          cardTapped = true;
+          introT = Math.min(introT, INTRO_HOLD);
+        }
+      }
+
+      // The main button carries the headshot, so "Talk to Scott" has a face
+      function ctaRow(url) {
+        return (
+          `<a id="cta" class="cta with-face" href="${url}">` +
+          `<img class="face" src="${CONFIG.headshot}" alt="">Talk to ${CONFIG.agent}</a>`
+        );
+      }
+
+      // A concession: the seller pays a little to keep the deal moving
+      function concession(p) {
+        credits += p.cost;
+        if (p.does === "fix") fixProblems(5);
+        else if (p.does === "rescue") {
+          lives = Math.min(lives + 1, 5);
+          power = "shield";
+          powerIcon = p.icon;
+          powerT = POWER_SECONDS;
+        }
+      }
+
+      // Showings stalled: cut the price to clear rows, or hold
+      function offerReduction(rd) {
+        deciding = "reduce";
+        reductionOffered = true;
+        const [a, b] = rd.cuts;
+        show(
+          `<p class="kicker">SHOWINGS ARE SLOWING DOWN</p>` +
+            `<h2>Buyers aren't biting.</h2><p>A price reduction brings them back.</p>` +
+            `<button id="cut1" class="choice give">Reduce ${money(a)}<small>Clears the bottom row</small></button>` +
+            `<button id="cut2" class="choice give">Reduce ${money(b)}<small>Clears the bottom two rows</small></button>` +
+            `<button id="nocut" class="choice">Hold the price<small>Keep fighting</small></button>` +
+            `<p class="small">Keyboard: 1, 2 or 3</p>`,
+        );
+      }
+
+      function answerReduction(choice) {
+        // 0 = hold, 1 = small cut, 2 = big cut
+        if (deciding !== "reduce") return;
+        deciding = false;
+        overlay.hidden = true;
+        if (choice) {
+          const cut = ROUNDS[round].reduction.cuts[choice - 1];
+          price -= cut;
+          const rows = [...new Set(threats.map((t) => t.y))]
+            .sort((a, b) => b - a)
+            .slice(0, choice);
+          for (const t of threats)
+            if (rows.includes(t.y)) {
+              t.dead = true;
+              burst(t.x, t.y, 10, 180);
+            }
+          threats = threats.filter((t) => !t.dead);
+          bombs = [];
+          say("Price reduced −" + money(cut), true, "Buyers are back");
+        }
+        track(choice ? "PriceReduction" : "PriceHeld");
+      }
+
+      function burst(x, y, n, speed) {
+        for (let i = 0; i < n; i++) {
+          const a = Math.random() * 7,
+            v = 60 + Math.random() * speed;
+          sparks.push({
+            x,
+            y,
+            vx: Math.cos(a) * v,
+            vy: Math.sin(a) * v,
+            life: 0.4,
+          });
+        }
+      }
+
+      // Broom: sweeps every price cut away and pushes the whole mess back up the screen
+      function sweep() {
+        bombs = [];
+        shake = 0.2;
+        const push = Math.min(
+          56,
+          Math.min(...threats.map((t) => t.y)) - FIELD_TOP,
+        );
+        for (const t of threats) t.y -= Math.max(0, push);
+        for (let x = 10; x < W; x += 20)
+          sparks.push({ x, y: PLAYER_Y - 30, vx: 0, vy: -500, life: 0.5 });
+      }
+
+      // Handyman: knocks out a few random problems outright
+      function fixProblems(n) {
+        const list = threats
+          .filter((t) => !t.boss)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, n);
+        for (const t of list) {
+          t.dead = true;
+          price += THREAT_VALUE;
+          burst(t.x, t.y, 14, 200);
+        }
+      }
+
+      // No contingencies: wipes out the lowest row and every falling price cut
+      function cashOffer() {
+        bombs = [];
+        shake = 0.25;
+        flashT = 0.15;
+        const low = Math.max(...threats.map((t) => t.y));
+        for (const t of threats) {
+          if (t.boss) {
+            t.hp = Math.max(1, t.hp - 8);
+            continue;
+          }
+          if (t.y < low - 5) continue;
+          t.dead = true;
+          price += THREAT_VALUE;
+          for (let i = 0; i < 14; i++) {
+            const a = Math.random() * 7,
+              v = 80 + Math.random() * 200;
+            sparks.push({
+              x: t.x,
+              y: t.y,
+              vx: Math.cos(a) * v,
+              vy: Math.sin(a) * v,
+              life: 0.4,
+            });
+          }
+        }
+      }
+
+      const pick = (list) => list[Math.floor(Math.random() * list.length)];
+
+      function say(text, bad, sub) {
+        banner = text;
+        bannerBad = bad;
+        banner2 = sub || "";
+        bannerT = sub ? 2.2 : 1.5;
+      }
+
+      function update(dt) {
+        const stg = ROUNDS[round];
+
+        // Player (termites reverse the controls)
+        const rev = curse === "termites" ? -1 : 1;
+        const move = curse === "lookyloo" ? 90 : 260; // looky-loos waste your time
+        if (keys.arrowleft || keys.a) px -= move * dt * rev;
+        if (keys.arrowright || keys.d) px += move * dt * rev;
+        if (curse === "lookyloo" && ptrDown && aimX !== null)
+          px += Math.max(-move * dt, Math.min(move * dt, aimX - px));
+        px = Math.max(20, Math.min(W - 20, px));
+        if (safe > 0) safe -= dt;
+
+        // Stage title card: everything waits until it finishes
+        // (it holds near the end until the player taps, then fades out)
+        if (introT > 0) {
+          if (introT > INTRO_HOLD || cardTapped) introT -= dt;
+          return;
+        }
+
+        // Stage clear celebration, then on to the next stage (or SOLD)
+        if (celebT > 0) {
+          for (const c of confetti) {
+            c.vy += 420 * dt;
+            c.x += c.vx * dt;
+            c.y += c.vy * dt;
+            c.rot += c.vr * dt;
+          }
+          for (const sp of sparks) {
+            sp.x += sp.vx * dt;
+            sp.y += sp.vy * dt;
+            sp.life -= dt;
+          }
+          sparks = sparks.filter((sp) => sp.life > 0);
+          if (shake > 0) shake -= dt;
+          if ((celebT -= dt) <= 0) {
+            confetti = [];
+            if (round + 1 >= ROUNDS.length) endGame(true);
+            else {
+              round++;
+              startRound();
+            }
+          }
+          return;
+        }
+
+        // The house is on the market from stage 2 on
+        if (round > 0) dom += dt / SECONDS_PER_DAY;
+
+        // Fire while space is held or a finger is down
+        if (powerT > 0 && (powerT -= dt) <= 0) power = null;
+        if (curseT > 0 && (curseT -= dt) <= 0) curse = null;
+        fireT += dt;
+        const rate =
+          (power === "rapid" ? 0.1 : power === "shotgun" ? 0.45 : 0.3) *
+          (curse === "mold" || curse === "lowball" ? 2.5 : 1);
+        if ((keys[" "] || ptrDown) && curse !== "wiring" && fireT > rate) {
+          fireT = 0;
+          if (power === "shotgun") {
+            // Fan of pellets, a muzzle flash and a little kick
+            for (let i = 0; i < 7; i++) {
+              const a = -0.45 + i * 0.15 + (Math.random() - 0.5) * 0.08,
+                v = 460 + Math.random() * 80;
+              shots.push({
+                x: px,
+                y: PLAYER_Y - 20,
+                vx: Math.sin(a) * v,
+                vy: -Math.cos(a) * v,
+                pellet: powerIcon,
+              });
+            }
+            flashT = 0.08;
+            shake = 0.1;
+          } else {
+            // Seller stayed home: shots crawl. Lights on: shots pierce. Lockbox: two at once.
+            const v = curse === "sellerhome" ? -240 : -480,
+              pierce = power === "pierce";
+            if (power === "twin")
+              for (const o of [-9, 9])
+                shots.push({
+                  x: px + o,
+                  y: PLAYER_Y - 20,
+                  vx: 0,
+                  vy: v,
+                  pierce,
+                });
+            else shots.push({ x: px, y: PLAYER_Y - 20, vx: 0, vy: v, pierce });
+          }
+        }
+        for (const s of shots) {
+          s.x += s.vx * dt;
+          s.y += s.vy * dt;
+        }
+        if (flashT > 0) flashT -= dt;
+        if (shake > 0) shake -= dt;
+        if (bannerT > 0) bannerT -= dt;
+
+        // Threats march side to side, step down at the edges, speed up as they thin out
+        const slow = power === "slow" ? 0.4 : 1;
+        if (stg.boss) {
+          // The boss slides side to side, faster as it weakens (unless a rate lock froze it)
+          const b = threats[0];
+          if (b && power !== "freeze") {
+            b.x += dir * (70 + (1 - b.hp / b.maxHp) * 70) * slow * dt;
+            if (b.x < 60 || b.x > W - 60) {
+              dir = -dir;
+              b.x = Math.max(60, Math.min(W - 60, b.x));
+            }
+          }
+        } else {
+          const speed =
+            (30 + Math.min(round, 2) * 10 + (24 - threats.length) * 4) * slow;
+          for (const t of threats) t.x += dir * speed * dt;
+          if (threats.some((t) => t.x < 20 || t.x > W - 20)) {
+            dir = -dir;
+            for (const t of threats) {
+              t.y += 16;
+              t.x += dir * speed * dt;
+            }
+          }
+        }
+
+        // Stalled showings: offer a price reduction once
+        const red = stg.reduction;
+        if (
+          red &&
+          !reductionOffered &&
+          threats.length >= red.minLeft &&
+          threats.some((t) => t.y > red.atY)
+        ) {
+          offerReduction(red);
+          return;
+        }
+
+        // Threats drop price cuts
+        if (power !== "freeze") bombT += dt * slow;
+        if (bombT > (stg.bombEvery || 1.8 - round * 0.3) && threats.length) {
+          bombT = 0;
+          if (stg.boss) {
+            // Spread of rejections: 3 wide, 5 wide once it's below half health
+            const b = threats[0],
+              n = b.hp < b.maxHp / 2 ? 5 : 3;
+            for (let i = 0; i < n; i++)
+              bombs.push({
+                x: b.x,
+                y: b.y + 40,
+                vx: (i - (n - 1) / 2) * 60,
+                big: true,
+              });
+          } else {
+            const t = threats[Math.floor(Math.random() * threats.length)];
+            bombs.push({ x: t.x, y: t.y + 14 });
+          }
+        }
+        for (const b of bombs) {
+          b.y += 170 * slow * dt;
+          b.x += (b.vx || 0) * slow * dt;
+        }
+
+        // Boss fight: a tiny cash buyer zips across now and then. Hit it and the loan doesn't matter.
+        if (stg.boss) {
+          flyerT += dt;
+          if (!flyer && flyerT > 7) {
+            flyerT = 0;
+            flyer = { x: dir > 0 ? -20 : W + 20, v: dir > 0 ? 140 : -140 };
+          }
+          if (flyer) {
+            flyer.x += flyer.v * dt;
+            if (flyer.x < -30 || flyer.x > W + 30) flyer = null;
+            else
+              for (const s of shots) {
+                if (
+                  Math.abs(s.x - flyer.x) < 13 &&
+                  Math.abs(s.y - FLYER_Y) < 13 &&
+                  threats[0]
+                ) {
+                  s.dead = true;
+                  flyer = null;
+                  const b = threats[0];
+                  // Cash buyers don't pay more, they close faster and for sure
+                  b.dead = true;
+                  shake = 0.5;
+                  bombs = [];
+                  dom = Math.max(1, dom - 5);
+                  celebSub = "Cash buyer! No appraisal needed";
+                  for (let i = 0; i < 50; i++) {
+                    const a = Math.random() * 7,
+                      v = 80 + Math.random() * 280;
+                    sparks.push({
+                      x: b.x,
+                      y: b.y,
+                      vx: Math.cos(a) * v,
+                      vy: Math.sin(a) * v,
+                      life: 0.5,
+                    });
+                  }
+                  break;
+                }
+              }
+          }
+        }
+
+        // Hits
+        for (const s of shots) {
+          if (s.dead) continue;
+          const t = threats.find(
+            (t) =>
+              !t.dead &&
+              !(s.hits && s.hits.has(t)) &&
+              Math.abs(t.x - s.x) < (t.boss ? 44 : 17) &&
+              Math.abs(t.y - s.y) < (t.boss ? 34 : 17),
+          );
+          if (t) {
+            if (s.pierce) (s.hits = s.hits || new Set()).add(t);
+            else s.dead = true;
+            t.hitT = 0.12;
+            const hurt = --t.hp > 0;
+            for (let i = 0; i < (hurt ? 4 : 10); i++) {
+              const a = Math.random() * 7,
+                v = 60 + Math.random() * 160;
+              sparks.push({
+                x: t.x,
+                y: t.y,
+                vx: Math.cos(a) * v,
+                vy: Math.sin(a) * v,
+                life: 0.4,
+              });
+            }
+            if (hurt) {
+              if (t.boss && Math.random() < 0.05)
+                drops.push({ x: t.x, y: t.y + 40, p: pick(stg.powerups) });
+              else if (t.boss && Math.random() < 0.04)
+                drops.push({
+                  x: t.x,
+                  y: t.y + 40,
+                  p: pick(stg.curses),
+                  bad: true,
+                });
+              continue;
+            }
+            t.dead = true;
+            if (!t.boss) price += THREAT_VALUE;
+            if (t.boss) {
+              shake = 0.5;
+              bombs = [];
+              celebSub = "Appraised at value!";
+              for (let i = 0; i < 40; i++) {
+                const a = Math.random() * 7,
+                  v = 80 + Math.random() * 260;
+                sparks.push({
+                  x: t.x,
+                  y: t.y,
+                  vx: Math.cos(a) * v,
+                  vy: Math.sin(a) * v,
+                  life: 0.4,
+                });
+              }
+            } else if (stg.curses && Math.random() < CURSE_CHANCE) {
+              drops.push({
+                x: t.x,
+                y: t.y,
+                p: pick(stg.curses === "inspection" ? CURSES : stg.curses),
+                bad: true,
+              });
+            } else if (Math.random() < (stg.dropChance || DROP_CHANCE)) {
+              drops.push({ x: t.x, y: t.y, p: pick(stg.powerups) });
+            }
+          }
+        }
+        for (const t of threats) if (t.hitT > 0) t.hitT -= dt;
+        for (const sp of sparks) {
+          sp.x += sp.vx * dt;
+          sp.y += sp.vy * dt;
+          sp.life -= dt;
+        }
+        sparks = sparks.filter((sp) => sp.life > 0);
+
+        // Power-ups fall; catch them with the agent
+        for (const d of drops) {
+          d.y += 110 * dt;
+          if (power === "magnet" && !d.bad)
+            d.x += Math.max(-220 * dt, Math.min(220 * dt, px - d.x));
+          if (Math.abs(d.x - px) < 24 && Math.abs(d.y - PLAYER_Y) < 24) {
+            d.dead = true;
+            if (d.bad && power === "immune") {
+              say("Pets out of the house!");
+              burst(d.x, d.y, 12, 160);
+              continue;
+            }
+            say(d.p.text, d.bad, d.p.sub);
+            if (d.bad) {
+              if (d.p.days && round > 0) dom += d.p.days;
+              if (d.p.kind === "lowball") power = null; // a lowball kills your momentum
+              if (d.p.kind === "repair") price -= REPAIR_COST;
+              else if (d.p.kind === "lowcomp") {
+                if (threats[0] && threats[0].boss)
+                  threats[0].hp = Math.min(threats[0].maxHp, threats[0].hp + 6);
+              } else if (d.p.kind !== "delay") {
+                curse = d.p.kind;
+                curseIcon = d.p.icon;
+                curseT = d.p.secs;
+              }
+            } else if (d.p.kind === "life") lives = Math.min(lives + 1, 5);
+            else if (d.p.kind === "comp") {
+              const b = threats[0];
+              if (b && b.boss) {
+                b.hp = Math.max(1, b.hp - 6);
+                burst(b.x, b.y, 20, 220);
+              }
+            }
+            else if (d.p.kind === "cash") cashOffer();
+            else if (d.p.kind === "concession") concession(d.p);
+            else if (d.p.kind === "sweep") sweep();
+            else if (d.p.kind === "fix") fixProblems(3);
+            else {
+              power = d.p.kind;
+              powerIcon = d.p.icon;
+              powerT = d.p.secs || POWER_SECONDS;
+            }
+          }
+        }
+        drops = drops.filter((d) => !d.dead && d.y < H);
+        for (const b of bombs) {
+          if (
+            Math.abs(b.x - px) < (power === "shield" ? 26 : 14) &&
+            Math.abs(b.y - PLAYER_Y) < (power === "shield" ? 26 : 14)
+          ) {
+            if (power === "shield") b.dead = true;
+            else if (safe <= 0) {
+              const cost = stg.hitCost || HIT_COST;
+              b.dead = true;
+              lives--;
+              price -= cost;
+              safe = 1.5;
+              if (round > 0) dom += HIT_DAYS;
+              if (stg.hitCost) say("Repair request! −" + money(cost), true);
+            }
+          }
+        }
+        threats = threats.filter((t) => !t.dead);
+        shots = shots.filter((s) => !s.dead && s.y > 0 && s.x > 0 && s.x < W);
+        bombs = bombs.filter((b) => !b.dead && b.y < H);
+
+        if (lives <= 0 || threats.some((t) => t.y > PLAYER_Y - 30))
+          return endGame(false);
+        if (!threats.length) celebrate();
+      }
+
+      function celebrate() {
+        celebT = CELEB_SECONDS;
+        bombs = [];
+        drops = [];
+        flyer = null;
+        bannerT = 0;
+        const colors = [
+          "#ffd166",
+          "#7CFC9A",
+          "#ff6b6b",
+          "#7fb7ff",
+          "#d59cff",
+          "#ffffff",
+        ];
+        for (let i = 0; i < 40; i++) {
+          const a = -Math.PI / 2 + (Math.random() - 0.5) * 2.0,
+            v = 160 + Math.random() * 220;
+          confetti.push({
+            x: W / 2 + (Math.random() - 0.5) * 60,
+            y: 300,
+            vx: Math.cos(a) * v,
+            vy: Math.sin(a) * v,
+            rot: Math.random() * 7,
+            vr: (Math.random() - 0.5) * 14,
+            color: colors[i % colors.length],
+          });
+        }
+      }
+
+      // Big green check that pops in and draws itself, over a burst of confetti
+      function drawCelebration(r) {
+        const t = CELEB_SECONDS - celebT;
+        const fade = Math.min(1, celebT / 0.25);
+        const cx = W / 2,
+          cy = 250;
+
+        // Dim the field but not the HUD, so the stage visibly ticks over to done
+        ctx.globalAlpha = 0.5 * fade;
+        ctx.fillStyle = "#0b1020";
+        ctx.fillRect(0, BAR_Y + BAR_H + 4, W, H);
+
+        for (const c of confetti) {
+          ctx.globalAlpha = fade;
+          ctx.fillStyle = c.color;
+          ctx.save();
+          ctx.translate(c.x, c.y);
+          ctx.rotate(c.rot);
+          ctx.fillRect(-4, -2.5, 8, 5);
+          ctx.restore();
+        }
+
+        // Circle pops in with a little overshoot
+        const e = Math.min(1, t / 0.3),
+          pop = 1 + 2.2 * Math.pow(e - 1, 3) + 1.2 * Math.pow(e - 1, 2);
+        const rad = 56 * Math.max(0, pop);
+        // Circle and check are drawn at 70% size
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.scale(0.7, 0.7);
+        ctx.translate(-cx, -cy);
+        ctx.globalAlpha = fade;
+        ctx.fillStyle = "#22a355";
+        ctx.beginPath();
+        ctx.arc(cx, cy, rad, 0, 7);
+        ctx.fill();
+        ctx.strokeStyle = "#7CFC9A";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        // Check mark draws itself
+        const pts = [
+          [-26, 2],
+          [-8, 20],
+          [28, -20],
+        ];
+        const seg1 = Math.hypot(18, 18),
+          seg2 = Math.hypot(36, 40),
+          prog = Math.min(1, Math.max(0, (t - 0.25) / 0.3)) * (seg1 + seg2);
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 11;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        ctx.moveTo(cx + pts[0][0], cy + pts[0][1]);
+        if (prog > 0) {
+          const a = Math.min(1, prog / seg1);
+          ctx.lineTo(cx + pts[0][0] + 18 * a, cy + pts[0][1] + 18 * a);
+          if (prog > seg1) {
+            const b = (prog - seg1) / seg2;
+            ctx.lineTo(cx + pts[1][0] + 36 * b, cy + pts[1][1] - 40 * b);
+          }
+          ctx.stroke();
+        }
+        ctx.lineCap = "butt";
+        ctx.restore();
+
+        // Words
+        const w = Math.min(1, Math.max(0, (t - 0.35) / 0.2));
+        ctx.globalAlpha = fade * w;
+        ctx.fillStyle = "#8a93b8";
+        ctx.font = "800 16px system-ui, sans-serif";
+        ctx.fillText(`STAGE ${round + 1} COMPLETE`, cx, cy + 66);
+        ctx.save();
+        ctx.translate(cx, cy + 98);
+        ctx.scale(0.8 + 0.2 * w, 0.8 + 0.2 * w);
+        ctx.fillStyle = "#ffd166";
+        ctx.font = "800 30px system-ui, sans-serif";
+        ctx.fillText(r.clear, 0, 0);
+        ctx.restore();
+        if (celebSub) {
+          ctx.fillStyle = "#7CFC9A";
+          ctx.font = "800 22px system-ui, sans-serif";
+          ctx.fillText(celebSub, cx, cy + 132);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function draw() {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const r = ROUNDS[round];
+        ctx.fillStyle = r.bg;
+        ctx.fillRect(0, 0, W, H);
+        if (shake > 0)
+          ctx.translate((Math.random() - 0.5) * 6, (Math.random() - 0.5) * 6);
+        ctx.textAlign = "center";
+
+        // Seller's house
+        ctx.fillStyle = "#1f7a3a";
+        ctx.fillRect(0, 540, W, 60);
+        ctx.font = "52px sans-serif";
+        ctx.fillText("🏡", W / 2, 556);
+
+        ctx.font = "28px sans-serif";
+        for (const t of threats) {
+          ctx.globalAlpha = t.hitT > 0 ? 0.35 : 1;
+          if (t.boss) {
+            ctx.font = "80px sans-serif";
+            ctx.fillText(t.icon, t.x, t.y);
+            ctx.font = "28px sans-serif";
+          } else ctx.fillText(t.icon, t.x, t.y);
+        }
+        ctx.globalAlpha = 1;
+        if (r.hp) {
+          // Hits left, as dots under each tough threat
+          ctx.fillStyle = "#ff9f9f";
+          ctx.font = "10px sans-serif";
+          for (const t of threats)
+            ctx.fillText("●".repeat(t.hp), t.x, t.y + 19);
+          ctx.font = "28px sans-serif";
+        }
+        if (safe <= 0 || Math.floor(safe * 10) % 2) {
+          ctx.font = "34px sans-serif";
+          ctx.fillText("🧑‍💼", px, PLAYER_Y);
+        }
+
+        if (power === "freeze" && threats[0] && threats[0].boss) {
+          ctx.fillStyle = "rgba(150, 210, 255, .35)";
+          ctx.strokeStyle = "#bfe6ff";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(threats[0].x, threats[0].y, 50, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          ctx.font = "22px sans-serif";
+          ctx.fillStyle = "#fff";
+          ctx.fillText("📞", threats[0].x + 38, threats[0].y - 34);
+        }
+        if (power === "shield") {
+          ctx.strokeStyle = "rgba(120, 200, 255, .9)";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(px, PLAYER_Y, 26, 0, 7);
+          ctx.stroke();
+        }
+        for (const d of drops) {
+          if (d.bad) {
+            ctx.fillStyle = `rgba(255, 60, 60, ${0.35 + 0.25 * Math.sin(performance.now() / 90)})`;
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, 19, 0, 7);
+            ctx.fill();
+          } else if (d.p.kind === "concession") {
+            ctx.fillStyle = "rgba(255, 179, 71, .3)";
+            ctx.strokeStyle = "#ffb347";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, 19, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+          }
+          ctx.fillStyle = "#fff"; // a translucent fill would fade the emoji too
+          ctx.fillText(d.p.icon, d.x, d.y);
+        }
+        if (flashT > 0) {
+          ctx.fillStyle = "rgba(255, 209, 102, .8)";
+          ctx.beginPath();
+          ctx.arc(px, PLAYER_Y - 22, 14, 0, 7);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = "#ffd166";
+        for (const s of shots) {
+          if (s.pellet) {
+            ctx.font = "16px sans-serif";
+            ctx.fillText(s.pellet, s.x, s.y);
+          } // blast shots fly as the power-up's emoji
+          else if (s.pierce) {
+            ctx.fillStyle = "#bfe6ff";
+            ctx.fillRect(s.x - 2.5, s.y - 12, 5, 24);
+            ctx.fillStyle = "#ffd166";
+          } else ctx.fillRect(s.x - 2, s.y - 8, 4, 16);
+        }
+        for (const sp of sparks) {
+          ctx.globalAlpha = sp.life / 0.4;
+          ctx.fillRect(sp.x - 2, sp.y - 2, 4, 4);
+        }
+        ctx.globalAlpha = 1;
+        if (flyer) {
+          ctx.fillStyle = `rgba(255, 209, 102, ${0.3 + 0.2 * Math.sin(performance.now() / 80)})`;
+          ctx.beginPath();
+          ctx.arc(flyer.x, FLYER_Y, 17, 0, 7);
+          ctx.fill();
+          ctx.strokeStyle = "#ffd166";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.font = "22px sans-serif";
+          ctx.fillStyle = "#fff";
+          ctx.fillText("💰", flyer.x, FLYER_Y);
+        }
+        ctx.fillStyle = "#ff5d5d";
+        for (const b of bombs)
+          if (!b.big) {
+            ctx.beginPath();
+            ctx.arc(b.x, b.y, 5, 0, 7);
+            ctx.fill();
+          }
+        ctx.font = "18px sans-serif";
+        ctx.fillStyle = "#fff";
+        for (const b of bombs) if (b.big) ctx.fillText("❌", b.x, b.y);
+
+        // HUD: stage bar. The current stage is a wide tab with its full name;
+        // the others shrink to a number (upcoming) or a check (done).
+        const gap = 5,
+          small = 30,
+          n = ROUNDS.length;
+        const wide = W - 28 - small * (n - 1) - gap * (n - 1);
+        let bx = 14;
+        ROUNDS.forEach((rd, i) => {
+          const isCur = i === round,
+            done = i < round || (isCur && celebT > 0),
+            w = isCur ? wide : small;
+          ctx.fillStyle = done ? "#1f7a3a" : isCur ? "#ffd166" : "#2a3560";
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(bx, BAR_Y, w, BAR_H, 7);
+          else ctx.rect(bx, BAR_Y, w, BAR_H);
+          ctx.fill();
+          ctx.fillStyle =
+            isCur && !done ? "#0b1020" : done ? "#fff" : "#8a93b8";
+          if (isCur) {
+            const txt = `${done ? "✓" : i + 1} · ${rd.bar}`;
+            ctx.font = "800 14px system-ui, sans-serif";
+            const tw = ctx.measureText(txt).width; // shrink long names to fit the tab
+            if (tw > w - 16)
+              ctx.font = `800 ${Math.floor((14 * (w - 16)) / tw)}px system-ui, sans-serif`;
+            ctx.fillText(txt, bx + w / 2, BAR_Y + BAR_H / 2 + 0.5);
+          } else {
+            ctx.font = "700 12px system-ui, sans-serif";
+            ctx.fillText(
+              done ? "✓" : String(i + 1),
+              bx + w / 2,
+              BAR_Y + BAR_H / 2 + 0.5,
+            );
+          }
+          bx += w + gap;
+        });
+        if (r.boss && threats[0]) {
+          // Appraisal meter: fills toward the contract price as the appraisal is beaten down
+          const b = threats[0], gap = r.boss.startGap * (b.hp / b.maxHp);
+          const appraised = roundTo250(bossContract * (1 - gap));
+          ctx.fillStyle = "#4a1f2a";
+          ctx.fillRect(14, BAR_Y + BAR_H + 8, W - 28, 14);
+          ctx.fillStyle = "#2bb673";
+          ctx.fillRect(14, BAR_Y + BAR_H + 8, (W - 28) * (1 - b.hp / b.maxHp), 14);
+          ctx.fillStyle = "#fff";
+          ctx.font = "800 11px system-ui, sans-serif";
+          ctx.fillText(
+            `${r.boss.name} ${money(appraised)} → CONTRACT ${money(bossContract)}`,
+            W / 2,
+            BAR_Y + BAR_H + 15.5,
+          );
+        }
+        if (power) {
+          ctx.textAlign = "left";
+          ctx.fillStyle = "#fff";
+          ctx.font = "600 16px system-ui, sans-serif";
+          ctx.fillText(`${powerIcon} ${Math.ceil(powerT)}s`, 12, 575);
+          ctx.textAlign = "center";
+        }
+        if (curse) {
+          ctx.textAlign = "right";
+          ctx.fillStyle = "#ff6b6b";
+          ctx.font = "700 16px system-ui, sans-serif";
+          ctx.fillText(`${curseIcon} ${Math.ceil(curseT)}s`, W - 12, 575);
+          ctx.textAlign = "center";
+        }
+        if (celebT > 0) drawCelebration(r);
+        if (bannerT > 0) {
+          ctx.globalAlpha = Math.min(1, bannerT * 2);
+          ctx.fillStyle = bannerBad
+            ? "#ff6b6b"
+            : banner2
+              ? "#ffb347"
+              : "#ffd166";
+          ctx.font = "700 22px system-ui, sans-serif";
+          const bw = ctx.measureText(banner).width; // shrink long banners to fit
+          if (bw > W - 24)
+            ctx.font = `700 ${Math.floor((22 * (W - 24)) / bw)}px system-ui, sans-serif`;
+          ctx.fillText(banner, W / 2, 320);
+          if (banner2) {
+            ctx.fillStyle = "#fff";
+            ctx.font = "600 16px system-ui, sans-serif";
+            ctx.fillText(banner2, W / 2, 346);
+          }
+          ctx.globalAlpha = 1;
+        }
+        // Stage title card
+        if (playing && introT > 0) {
+          ctx.globalAlpha = Math.min(
+            1,
+            introT * 4,
+            (INTRO_SECONDS - introT) * 8,
+          );
+          ctx.fillStyle = "rgba(11, 16, 32, .9)";
+          ctx.fillRect(0, 190, W, 236);
+          ctx.fillStyle = r.kicker ? "#ff4d6d" : "#8a93b8";
+          ctx.font = "700 16px system-ui, sans-serif";
+          ctx.fillText(
+            r.kicker || `STAGE ${round + 1} OF ${ROUNDS.length}`,
+            W / 2,
+            250,
+          );
+          ctx.font = "60px sans-serif";
+          ctx.fillText(r.icon, W / 2, 303);
+          ctx.fillStyle = "#ffd166";
+          ctx.font = "800 32px system-ui, sans-serif";
+          ctx.fillText(r.label, W / 2, 362);
+          if (r.opening || r.note) {
+            ctx.fillStyle = "#ffb347";
+            ctx.font = "700 14px system-ui, sans-serif";
+            ctx.fillText(
+              r.note ||
+                `Buyer's market: under contract at ${Math.round(CONFIG.openingOffer * 100)}% of list`,
+              W / 2,
+              388,
+            );
+          }
+          if (!cardTapped) {
+            ctx.globalAlpha *= 0.55 + 0.45 * Math.sin(performance.now() / 250);
+            ctx.fillStyle = "#fff";
+            ctx.font = "700 15px system-ui, sans-serif";
+            ctx.fillText("Tap to continue", W / 2, 412);
+          }
+          ctx.globalAlpha = 1;
+        }
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "600 20px system-ui, sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText(money(price), 14, HUD_Y);
+        ctx.fillStyle = "#8a93b8";
+        ctx.font = "800 10px system-ui, sans-serif";
+        ctx.fillText(
+          offersOpened ? "SALES PRICE" : "LIST PRICE",
+          14,
+          HUD_Y - 19,
+        );
+        if (credits) {
+          ctx.fillStyle = "#ffb347";
+          ctx.font = "600 12px system-ui, sans-serif";
+          ctx.fillText(`−${money(credits)} credits`, 12, 592);
+        }
+        if (round > 0 || dom > 0) {
+          // Days on market: green, then amber after 30, red after 60
+          const d = Math.floor(dom),
+            label = `${d} day${d === 1 ? "" : "s"} on market`;
+          ctx.font = "800 12px system-ui, sans-serif";
+          const pw = ctx.measureText(label).width + 18;
+          ctx.fillStyle = d > 60 ? "#d62828" : d > 30 ? "#b86e00" : "#1f7a3a";
+          ctx.fillRect(W / 2 - pw / 2, HUD_Y - 11, pw, 22);
+          ctx.fillStyle = "#fff";
+          ctx.textAlign = "center";
+          ctx.fillText(label, W / 2, HUD_Y + 0.5);
+          ctx.textAlign = "left";
+        }
+        ctx.fillStyle = "#fff";
+        ctx.font = "16px sans-serif";
+        ctx.textAlign = "right";
+        ctx.fillText(
+          lives > 4 ? "❤️×" + lives : "❤️".repeat(Math.max(0, lives)),
+          W - 14,
+          HUD_Y,
+        );
+      }
+
+      // ---- Input ----------------------------------------------------------------
+      function aim(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * W;
+        aimX = curse === "termites" ? W - x : x; // termites mirror your finger
+        if (curse !== "lookyloo") px = aimX; // looky-loos make you crawl toward it instead
+      }
+      window.addEventListener("pointerdown", (e) => {
+        if (e.target.closest("a, button")) return;
+        ptrDown = true;
+        if (playing) {
+          continueCard();
+          aim(e);
+        } else if (!started) startGame();
+      });
+      window.addEventListener("pointermove", (e) => {
+        if (playing && ptrDown) aim(e);
+      });
+      window.addEventListener("pointerup", () => {
+        ptrDown = false;
+      });
+      window.addEventListener("pointercancel", () => {
+        ptrDown = false;
+      });
+      window.addEventListener("keydown", (e) => {
+        const k = e.key.toLowerCase();
+        keys[k] = true;
+        if (k === " " || k.startsWith("arrow")) e.preventDefault();
+        // Space starts the first game only, so holding it can't skip the end screen
+        if (!playing && !e.repeat && (k === "enter" || (k === " " && !started)))
+          startGame();
+        if (deciding === "reduce" && (k === "1" || k === "2" || k === "3"))
+          answerReduction(k === "3" ? 0 : +k);
+        if (playing && !e.repeat && (k === " " || k === "enter"))
+          continueCard();
+      });
+      window.addEventListener("keyup", (e) => {
+        keys[e.key.toLowerCase()] = false;
+      });
+      overlay.addEventListener("click", (e) => {
+        const id = (e.target.closest("a, button") || {}).id;
+        if (id === "again") startGame();
+        if (id === "cta") track("Lead");
+        if (id === "cut1" || id === "cut2" || id === "nocut")
+          answerReduction(id === "nocut" ? 0 : +id.slice(3));
+      });
+
+      // ---- Main loop ------------------------------------------------------------
+      let last = performance.now();
+      function frame(now) {
+        const dt = Math.min((now - last) / 1000, 0.05);
+        last = now;
+        if (playing && !deciding) update(dt);
+        draw();
+        requestAnimationFrame(frame);
+      }
+
+      startRound();
+      show(
+        `<h1>Listing Invaders</h1>` +
+          `<p>Stop the deal killers.<br>Get top dollar for your house.</p>` +
+          `<p><b>Tap to start</b></p>` +
+          `<p class="small">Phone: drag to move and fire.<br>Keyboard: A/D or arrows to move, space to fire.</p>` +
+          `<div class="agent"><img class="face big" src="${CONFIG.headshot}" alt="${CONFIG.agentFullName}">` +
+          `<div><b>${CONFIG.agentFullName}</b><img class="logo" src="${CONFIG.logo}" alt="${CONFIG.brokerage}"></div></div>` +
+          (START_ROUND
+            ? `<p class="small" style="color:#ffb347">Test mode: starting at stage ${START_ROUND + 1} (${ROUNDS[START_ROUND].label})</p>`
+            : ""),
+      );
+      requestAnimationFrame(frame);
+    </script>
+  </body>
+</html>
