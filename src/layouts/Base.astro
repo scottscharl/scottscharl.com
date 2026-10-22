@@ -119,6 +119,11 @@ const schema = {
         <img src="/kw-metro.png" alt={agent.brokerage} class="mx-auto mb-4 h-10 w-auto" width="108" height="40" loading="lazy" />
         <p class="text-sm font-semibold text-ink">{agent.name} · {agent.title}</p>
         <p>
+          <a href="/stay-in-touch" class="font-semibold text-brand hover:underline"
+            >Stay in touch: neighborhood events, market updates & local favorites →</a
+          >
+        </p>
+        <p>
           {agent.office.street}, {agent.office.city}, {agent.office.region} {agent.office.zip}
           {agent.license && ` · Michigan License #${agent.license}`}
         </p>
