@@ -1,0 +1,68 @@
+---
+// The hero's horizontal (16:9) branding video. With a YouTube ID set in
+// src/data/site.ts it shows a poster with a play button and only loads YouTube
+// when tapped (keeps the page fast and avoids YouTube tracking until then).
+// Without an ID it shows the neighborhood park photo in the same space.
+import { Picture } from "astro:assets";
+import Icon from "./Icon.astro";
+import park from "../assets/photos/neighborhood-park.jpg";
+import { heroVideo } from "../data/site";
+
+const { youtubeId, title } = heroVideo;
+---
+
+<div class="relative aspect-video w-full overflow-hidden rounded-2xl bg-stone-200 shadow-xl shadow-black/10">
+  {
+    youtubeId ? (
+      <button
+        type="button"
+        id="hero-video"
+        data-youtube-id={youtubeId}
+        data-title={title}
+        class="group absolute inset-0 h-full w-full"
+        aria-label={`Play video: ${title}`}
+      >
+        <img
+          src={`https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`}
+          alt=""
+          class="h-full w-full object-cover"
+          fetchpriority="high"
+        />
+        <span class="absolute inset-0 grid place-items-center bg-black/10 transition-colors group-hover:bg-black/20">
+          <span class="grid h-20 w-20 place-items-center rounded-full bg-brand text-white shadow-lg transition-transform group-hover:scale-105">
+            <Icon name="play" class="ml-1 h-8 w-8" />
+          </span>
+        </span>
+      </button>
+    ) : (
+      <Picture
+        src={park}
+        formats={["avif", "webp"]}
+        widths={[600, 900, 1200, 1800]}
+        sizes="(min-width: 1024px) 1024px, 100vw"
+        alt="Neighbors gathered in a Royal Oak pocket park on a summer evening, with a food truck parked on the street"
+        class="h-full w-full object-cover"
+        pictureAttributes={{ class: "block h-full" }}
+        loading="eager"
+        fetchpriority="high"
+      />
+    )
+  }
+</div>
+
+{
+  youtubeId && (
+    <script>
+      const button = document.getElementById("hero-video");
+      button?.addEventListener("click", () => {
+        const iframe = document.createElement("iframe");
+        iframe.src = `https://www.youtube-nocookie.com/embed/${button.dataset.youtubeId}?autoplay=1&rel=0&modestbranding=1`;
+        iframe.title = button.dataset.title ?? "Video";
+        iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+        iframe.allowFullscreen = true;
+        iframe.className = "absolute inset-0 h-full w-full";
+        button.replaceWith(iframe);
+      });
+    </script>
+  )
+}

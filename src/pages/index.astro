@@ -1,160 +1,223 @@
 ---
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
-import CtaBanner from "../components/CtaBanner.astro";
-import { agent, contactCta, priceCta, services, reviews } from "../data/site";
-import { Picture } from "astro:assets";
-import park from "../assets/photos/neighborhood-park.jpg";
-import truck from "../assets/photos/food-truck-window.jpg";
-import welcome from "../assets/photos/welcome-neighbors.jpg";
+import HeroVideo from "../components/HeroVideo.astro";
+import { agent, contactCta, leadsEndpoint } from "../data/site";
+
+const field =
+  "mt-1.5 w-full rounded-lg border border-rule bg-card px-3.5 py-2.5 text-base outline-none focus:border-ink focus:ring-2 focus:ring-ink/10";
 ---
 
 <Base
   title="Scott Scharl | Home is waiting. — Keller Williams Metro, Royal Oak"
-  description="Scott Scharl, REALTOR® with Keller Williams Metro in Royal Oak, helps buyers, sellers and renters across Metro Detroit."
+  description="Scott Scharl, REALTOR® with Keller Williams Metro in Royal Oak, helps buyers, sellers, renters and investors across Metro Detroit."
 >
   <!-- Hero -->
-  <section class="relative overflow-hidden">
-    <div
-      class="container-px relative mx-auto flex min-h-[78svh] max-w-4xl flex-col items-center justify-center py-20 text-center sm:py-28"
-    >
-      <img
-        src={agent.photo}
-        alt={agent.name}
-        class="h-44 w-44 rounded-full bg-stone-100 object-cover shadow-lg shadow-black/10 sm:h-52 sm:w-52"
-        width="208"
-        height="208"
-        fetchpriority="high"
-      />
-      <h1 class="mt-10 text-5xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-7xl">
-        {agent.tagline}
-      </h1>
-      <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
-        Navigate today's market with a trusted advisor.
-      </p>
-      <div class="mt-10 flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
-        <a
-          href={contactCta.href}
-          class="rounded-full bg-brand px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand/20 transition-colors hover:bg-brand-dark"
-          >{contactCta.label}</a
-        >
-        <a href={priceCta.href} class="inline-flex items-center gap-1.5 text-sm font-semibold hover:text-brand">
-          {priceCta.label}
-          <Icon name="arrow" class="h-4 w-4 text-brand" />
-        </a>
-      </div>
+  <section class="container-px mx-auto max-w-5xl pb-16 pt-14 text-center sm:pb-20 sm:pt-20">
+    <h1 class="text-5xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-7xl">{agent.tagline}</h1>
+    <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
+      Navigate today's market with a trusted advisor.
+    </p>
+    <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-8">
+      <a
+        href={contactCta.href}
+        class="rounded-full bg-brand px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand/20 transition-colors hover:bg-brand-dark"
+        >{contactCta.label}</a
+      >
+      <a href={agent.sms} class="inline-flex items-center gap-2 text-sm font-semibold hover:text-brand">
+        <Icon name="message" class="h-4 w-4 text-brand" />
+        Or text {agent.phoneDisplay}
+      </a>
     </div>
-  </section>
-
-  <!-- Neighborhood photos -->
-  <section class="border-t border-rule">
-    <div class="container-px mx-auto max-w-6xl py-16 sm:py-20">
-      <div class="mx-auto max-w-2xl text-center">
-        <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Love where you live.</h2>
-        <p class="mt-4 text-lg leading-relaxed text-muted">
-          This summer my family and I hosted a food truck night for our neighbors. I'm blessed to be able to do
-          these kinds of things!
-        </p>
-        <a
-          href="/stay-in-touch"
-          class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline"
-          >Get invited to the next one <Icon name="arrow" class="h-4 w-4" /></a
-        >
-      </div>
-      <div class="mt-10 grid gap-3 sm:gap-4 md:grid-cols-3">
-        <div class="md:col-span-2 md:row-span-2">
-          <Picture
-            src={park}
-            formats={["avif", "webp"]}
-            widths={[600, 900, 1200, 1800]}
-            sizes="(min-width: 768px) 66vw, 100vw"
-            alt="Neighbors gathered in a Royal Oak pocket park on a summer evening, with a food truck parked on the street"
-            class="aspect-[3/2] h-full w-full rounded-2xl object-cover md:aspect-auto"
-            pictureAttributes={{ class: "block h-full" }}
-            loading="lazy"
-          />
-        </div>
-        <Picture
-          src={truck}
-          formats={["avif", "webp"]}
-          widths={[400, 600, 900]}
-          sizes="(min-width: 768px) 33vw, 100vw"
-          alt="A dad and his daughter ordering at a mint-green food truck on a tree-lined street"
-          class="aspect-[3/2] w-full rounded-2xl object-cover"
-          pictureAttributes={{ class: "block" }}
-          loading="lazy"
-        />
-        <Picture
-          src={welcome}
-          formats={["avif", "webp"]}
-          widths={[400, 600, 900]}
-          sizes="(min-width: 768px) 33vw, 100vw"
-          alt="A hand-lettered “Welcome, Neighbors!” sign taped to a wooden post in the park"
-          class="aspect-[3/2] w-full rounded-2xl object-cover"
-          pictureAttributes={{ class: "block" }}
-          loading="lazy"
-        />
-      </div>
-    </div>
-  </section>
-
-  <!-- Services -->
-  <section class="border-t border-rule bg-sand/60">
-    <div class="container-px mx-auto max-w-6xl py-16 sm:py-20">
-      <h2 class="text-center text-3xl font-semibold tracking-tight">Who I help</h2>
-      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          services.map((s) => (
-            <a
-              href={s.href}
-              class="group flex flex-col items-center rounded-2xl border border-rule bg-card p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md"
-            >
-              <div class="grid h-11 w-11 place-items-center rounded-xl bg-brand/10 text-brand">
-                <Icon name={s.icon} class="h-5 w-5" />
-              </div>
-              <h3 class="mt-5 text-lg font-semibold">{s.title}</h3>
-              <span class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand">
-                {s.linkLabel}
-                <Icon name="arrow" class="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </a>
-          ))
-        }
-      </div>
+    <div class="mt-12">
+      <HeroVideo />
     </div>
   </section>
 
   <!-- About -->
-  <section class="container-px mx-auto max-w-6xl py-16 sm:py-24">
-    <div class="mx-auto max-w-3xl text-center">
-      <h2 class="text-3xl font-semibold tracking-tight">Hi, I'm Scott.</h2>
-      <p class="mt-6 text-lg leading-relaxed text-ink/80">
-        I'm a REALTOR® with Keller Williams Metro. I was born in Royal Oak, grew up in Troy, and my wife and I are
-        now proud homeowners back in Royal Oak. I help people buy, sell and rent across Metro Detroit, with straight answers and no pressure.
+  <section id="about" class="scroll-mt-16 border-t border-rule bg-sand/60">
+    <div class="container-px mx-auto max-w-3xl py-16 text-center sm:py-20">
+      <img
+        src={agent.photo}
+        alt={agent.name}
+        class="mx-auto h-28 w-28 rounded-full bg-stone-100 object-cover shadow-lg shadow-black/10"
+        width="112"
+        height="112"
+        loading="lazy"
+      />
+      <h2 class="mt-6 text-3xl font-semibold tracking-tight sm:text-4xl">Hi, I'm Scott.</h2>
+      <p class="mt-5 text-lg leading-relaxed text-ink/80">
+        I'm a REALTOR® with {agent.brokerage}. I was born in Royal Oak, grew up in Troy, and my wife and I are now
+        proud homeowners back in Royal Oak.
       </p>
-      <a href="/my-story" class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline">
-        Read my story <Icon name="arrow" class="h-4 w-4" />
-      </a>
+      <p class="mt-4 text-lg leading-relaxed text-ink/80">
+        I sold real estate in the Phoenix area from 2015 to 2019, from starter homes to million-dollar luxury. Now I
+        help buyers, sellers, renters and investors across Metro Detroit, with straight answers and no pressure.
+      </p>
     </div>
   </section>
 
-  <!-- Reviews (hidden until reviews are added in src/data/site.ts) -->
-  {
-    reviews.length > 0 && (
-      <section class="border-t border-rule bg-sand/60">
-        <div class="container-px mx-auto grid max-w-6xl gap-6 py-16 sm:grid-cols-2 sm:py-20 lg:grid-cols-3">
-          {reviews.map((r) => (
-            <figure class="rounded-2xl bg-card p-6">
-              <blockquote class="leading-relaxed text-ink/80">“{r.quote}”</blockquote>
-              <figcaption class="mt-4 text-sm font-semibold">
-                {r.name} <span class="font-normal text-muted">· {r.location}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-    )
-  }
+  <!-- Contact -->
+  <section id="contact" class="scroll-mt-16 border-t border-rule">
+    <div class="container-px mx-auto max-w-2xl py-16 sm:py-24">
+      <h2 class="text-center text-4xl font-semibold tracking-tight sm:text-5xl">Let's talk.</h2>
+      <p class="mt-4 text-center text-lg text-muted">
+        Text, call or email, whatever's easiest. Or send a note and I'll get back to you as soon as I can.
+      </p>
 
-  <CtaBanner />
+      <ul class="mt-8 grid gap-3 sm:grid-cols-3">
+        {
+          [
+            { href: agent.sms, icon: "message", label: "Text", value: agent.phoneDisplay },
+            { href: `tel:${agent.phone}`, icon: "phone", label: "Call", value: agent.phoneDisplay },
+            { href: `mailto:${agent.email}`, icon: "mail", label: "Email", value: agent.email },
+          ].map((c) => (
+            <li>
+              <a
+                href={c.href}
+                class="flex h-full flex-col items-center rounded-2xl border border-rule bg-card p-5 text-center transition-colors hover:border-brand/50"
+              >
+                <Icon name={c.icon} class="h-5 w-5 text-brand" />
+                <span class="mt-3 font-semibold">{c.label}</span>
+                <span class="mt-0.5 break-words text-sm text-muted">{c.value}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div id="form-sent" class="mt-10 hidden rounded-2xl border border-rule bg-card p-8 text-center" role="status">
+        <h3 class="text-2xl font-semibold tracking-tight">Thanks — got it.</h3>
+        <p class="mt-2 text-muted">I'll get back to you as soon as I can. Talk soon!</p>
+      </div>
+
+      <form
+        id="contact-form"
+        method="post"
+        action={leadsEndpoint}
+        class="mt-10 space-y-5 rounded-2xl border border-rule bg-card p-6 shadow-sm sm:p-8"
+      >
+        <label class="block text-sm font-medium">Your name<input name="name" required autocomplete="name" class={field} /></label>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="block text-sm font-medium">Phone<input name="phone" type="tel" autocomplete="tel" class={field} /></label>
+          <label class="block text-sm font-medium">Email<input name="email" type="email" autocomplete="email" class={field} /></label>
+        </div>
+        <label class="block text-sm font-medium">
+          How can I help? <span class="font-normal text-muted">(optional)</span>
+          <textarea name="message" rows="4" class={field}></textarea>
+        </label>
+        <label class="flex items-start gap-3 text-sm">
+          <input type="checkbox" name="email_ok" value="yes" class="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-brand" />
+          <span>
+            <span class="font-medium">Add me to your neighborhood list.</span>
+            <span class="text-muted">Event invites, market updates and local favorites. A few emails a season.</span>
+          </span>
+        </label>
+
+        <!-- Spam trap: hidden from people, filled in by bots. -->
+        <div class="hidden" aria-hidden="true">
+          <label>Company<input name="company" tabindex="-1" autocomplete="off" /></label>
+        </div>
+        <input type="hidden" name="topic" value="General" />
+        <input type="hidden" name="form" value="contact" />
+        <input type="hidden" name="source" />
+        <input type="hidden" name="t" />
+        <input type="hidden" name="page" />
+
+        <p id="form-error" class="hidden rounded-lg bg-brand/10 px-4 py-3 text-sm" role="alert">
+          Sorry, that didn't go through. Please text me at
+          <a href={agent.sms} class="font-semibold underline">{agent.phoneDisplay}</a> instead.
+        </p>
+
+        <button
+          type="submit"
+          class="w-full rounded-full bg-brand px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
+          >Send</button
+        >
+      </form>
+    </div>
+  </section>
+
+  <!-- Phones: keep the contact button in reach until the form is on screen. -->
+  <a
+    id="sticky-cta"
+    href={contactCta.href}
+    class="fixed inset-x-4 bottom-4 z-40 rounded-full bg-brand py-3.5 text-center text-base font-semibold text-white shadow-lg shadow-black/20 transition-all duration-200 sm:hidden"
+    >{contactCta.label}</a
+  >
+
+  <script>
+    const form = document.getElementById("contact-form") as HTMLFormElement;
+    const sent = document.getElementById("form-sent")!;
+    const error = document.getElementById("form-error")!;
+    const button = form.querySelector("button")!;
+    const params = new URLSearchParams(location.search);
+    const input = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
+    const phone = input("phone");
+    const email = input("email");
+    const listOk = input("email_ok");
+
+    const showSent = () => {
+      form.classList.add("hidden");
+      sent.classList.remove("hidden");
+    };
+
+    // Need a phone or an email; joining the list needs an email.
+    const validate = () => {
+      email.required = listOk.checked;
+      phone.setCustomValidity(phone.value.trim() || email.value.trim() ? "" : "Please add a phone number or email.");
+    };
+    [phone, email, listOk].forEach((el) => el.addEventListener("input", validate));
+    listOk.addEventListener("change", validate);
+
+    // Old links carry what they were about, e.g. /?topic=Selling from the old seller page.
+    const topic = params.get("topic");
+    if (topic) input("topic").value = topic;
+    const starters: Record<string, string> = {
+      Selling: "I'd like to know what a buyer would pay for my house.",
+      Buying: "I'm thinking about buying and would love to talk.",
+      Renting: "I'm looking for a rental and would love some help.",
+      Investing: "I'd love to hear about off-market properties. My buy box: ",
+    };
+    const message = form.elements.namedItem("message") as HTMLTextAreaElement;
+    if (topic && starters[topic] && !message.value) message.value = starters[topic];
+    if (params.has("list")) listOk.checked = true;
+    validate();
+
+    // Where the visitor came from, e.g. /?src=postcard-fall#contact
+    input("source").value = params.get("src") ?? document.referrer;
+    input("t").value = String(Date.now());
+    input("page").value = location.pathname;
+    if (params.has("sent")) showSent();
+    if (params.has("error")) error.classList.remove("hidden");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      validate();
+      if (!form.reportValidity()) return;
+      error.classList.add("hidden");
+      button.disabled = true;
+      button.textContent = "Sending…";
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        showSent();
+      } catch {
+        error.classList.remove("hidden");
+        button.disabled = false;
+        button.textContent = "Send";
+      }
+    });
+
+    // Hide the sticky phone button while the contact section is on screen.
+    const sticky = document.getElementById("sticky-cta")!;
+    new IntersectionObserver(([entry]) => {
+      sticky.classList.toggle("translate-y-24", entry.isIntersecting);
+      sticky.classList.toggle("opacity-0", entry.isIntersecting);
+    }).observe(document.getElementById("contact")!);
+  </script>
 </Base>

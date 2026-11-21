@@ -1,0 +1,34 @@
+---
+// Old pages from before the one-page site. Printed postcards and QR codes may
+// still point at them, so each sends the visitor to the right spot on the home
+// page, keeping any ?src= tracking. Works without JavaScript via meta refresh.
+interface Props {
+  /** Where to go, e.g. "/#contact". */
+  to: string;
+  /** Extra query to add, e.g. "topic=Selling". */
+  add?: string;
+}
+const { to, add = "" } = Astro.props;
+const [path, hash = ""] = to.split("#");
+const fallback = `${path}${add ? `?${add}` : ""}${hash ? `#${hash}` : ""}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0;url=${fallback}`} />
+    <link rel="canonical" href={new URL(path, Astro.site)} />
+    <title>Scott Scharl</title>
+    <script is:inline define:vars={{ path, hash, add }}>
+      const q = new URLSearchParams(location.search);
+      new URLSearchParams(add).forEach((v, k) => q.has(k) || q.set(k, v));
+      const query = q.toString();
+      location.replace(path + (query ? "?" + query : "") + (hash ? "#" + hash : ""));
+    </script>
+  </head>
+  <body>
+    <a href={fallback}>Continue to scottscharl.com</a>
+  </body>
+</html>

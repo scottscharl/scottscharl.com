@@ -1,15 +1,12 @@
 ---
 import "../styles/global.css";
-import Icon from "../components/Icon.astro";
-import PumpkinfestBar from "../components/PumpkinfestBar.astro";
-import { agent, contactCta, nav } from "../data/site";
+import { agent, contactCta } from "../data/site";
 
 interface Props {
   title: string;
   description: string;
 }
 const { title, description } = Astro.props;
-const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 const year = new Date().getFullYear();
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
@@ -63,66 +60,22 @@ const schema = {
           <span class="h-6 w-px bg-rule" aria-hidden="true"></span>
           <img src="/kw-metro.png" alt="" class="h-7 w-auto" width="76" height="28" />
         </a>
-
-        <nav class="hidden items-center gap-6 md:flex lg:gap-8" aria-label="Primary">
-          {
-            nav.map((item) => (
-              <a
-                href={item.href}
-                aria-current={path === item.href ? "page" : undefined}
-                class="whitespace-nowrap text-sm font-medium text-muted transition-colors hover:text-ink aria-[current=page]:text-ink"
-              >
-                {item.label}
-              </a>
-            ))
-          }
-          <a
-            href={contactCta.href}
-            class="whitespace-nowrap rounded-full bg-brand px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
-            >{contactCta.label}</a
-          >
-        </nav>
-
-        <button
-          type="button"
-          id="menu-toggle"
-          class="inline-flex h-10 w-10 items-center justify-center md:hidden"
-          aria-label="Open menu"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
+        <a
+          href={contactCta.href}
+          class="hidden whitespace-nowrap rounded-full bg-brand px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark sm:inline-flex"
+          >{contactCta.label}</a
         >
-          <Icon name="menu" class="h-5 w-5" />
-        </button>
       </div>
-
-      <nav id="mobile-menu" class="hidden border-t border-rule md:hidden" aria-label="Mobile">
-        <div class="container-px flex flex-col py-2">
-          {
-            [...nav, contactCta].map((item) => (
-              <a href={item.href} class="whitespace-nowrap py-3 text-base font-medium">
-                {item.label}
-              </a>
-            ))
-          }
-        </div>
-      </nav>
     </header>
-
-    <PumpkinfestBar />
 
     <main id="main-content" class="flex-1">
       <slot />
     </main>
 
-    <footer class="border-t border-rule">
+    <footer class="border-t border-rule pb-20 sm:pb-0">
       <div class="container-px mx-auto max-w-6xl space-y-2 py-10 text-center text-xs leading-relaxed text-muted">
         <img src="/kw-metro.png" alt={agent.brokerage} class="mx-auto mb-4 h-10 w-auto" width="108" height="40" loading="lazy" />
         <p class="text-sm font-semibold text-ink">{agent.name} · {agent.title}</p>
-        <p>
-          <a href="/stay-in-touch" class="font-semibold text-brand hover:underline"
-            >Stay in touch: neighborhood events, market updates & local favorites →</a
-          >
-        </p>
         <p>
           {agent.office.street}, {agent.office.city}, {agent.office.region} {agent.office.zip}
           {agent.license && ` · Michigan License #${agent.license}`}
@@ -133,16 +86,5 @@ const schema = {
         </p>
       </div>
     </footer>
-
-    <script>
-      const toggle = document.getElementById("menu-toggle");
-      const menu = document.getElementById("mobile-menu");
-      toggle?.addEventListener("click", () => {
-        const open = toggle.getAttribute("aria-expanded") === "true";
-        toggle.setAttribute("aria-expanded", String(!open));
-        toggle.setAttribute("aria-label", open ? "Open menu" : "Close menu");
-        menu?.classList.toggle("hidden", open);
-      });
-    </script>
   </body>
 </html>
