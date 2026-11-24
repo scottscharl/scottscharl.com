@@ -50,11 +50,6 @@
   navigation: auto;
 }
 
-/* The header stays put while the page content cross-fades. */
-.site-header {
-  view-transition-name: site-header;
-}
-
 @keyframes vt-fade-out {
   to {
     opacity: 0;
