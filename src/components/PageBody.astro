@@ -5,7 +5,7 @@ import Icon from "./Icon.astro";
 import { Picture } from "astro:assets";
 import portrait from "../assets/photos/scott-arms-crossed.jpg";
 import park from "../assets/photos/neighborhood-park.jpg";
-import { agent, contactCta, leadsEndpoint, reviews } from "../data/site";
+import { agent, contactCta, reviews } from "../data/site";
 
 interface Props {
   /** Which photo sits beside the About text. */
@@ -19,8 +19,6 @@ const about =
 
 const showPlaceholders = import.meta.env.DEV && reviews.length === 0;
 
-const field =
-  "mt-1.5 w-full rounded-lg border border-rule bg-card px-3.5 py-2.5 text-base outline-none focus:border-ink focus:ring-2 focus:ring-ink/10";
 ---
 
   <!-- About -->
@@ -82,23 +80,27 @@ const field =
 
   <!-- Contact -->
   <section id="contact" class="scroll-mt-16 border-t border-rule">
-    <div class="container-px mx-auto max-w-2xl py-16 sm:py-24">
+    <div class="container-px mx-auto max-w-4xl py-16 sm:py-24">
       <h2 class="text-center text-4xl font-semibold tracking-tight sm:text-5xl">Tell me where you're headed.</h2>
       <p class="mt-4 text-center text-lg text-muted">
-        Text, call or email, whatever's easiest. Or send a note and I'll get back to you as soon as I can.
+        Text, call, email or send a message, whatever's easiest. I'll get back to you as soon as I can.
       </p>
 
-      <ul class="mt-8 grid gap-3 sm:grid-cols-3">
+      <ul class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {
           [
             { href: agent.sms, icon: "message", label: "Text", value: agent.phoneDisplay },
             { href: `tel:${agent.phone}`, icon: "phone", label: "Call", value: agent.phoneDisplay },
             { href: `mailto:${agent.email}`, icon: "mail", label: "Email", value: agent.email },
+            { href: "/contact", icon: "send", label: "Message", value: "Send a note →", ghost: true },
           ].map((c) => (
             <li>
               <a
                 href={c.href}
-                class="flex h-full flex-col items-center rounded-2xl border border-rule bg-card p-5 text-center transition-colors hover:border-brand/50"
+                class:list={[
+                  "flex h-full flex-col items-center rounded-2xl border p-5 text-center transition-colors hover:border-brand/50",
+                  c.ghost ? "border-ink/20 bg-transparent" : "border-rule bg-card",
+                ]}
               >
                 <Icon name={c.icon} class="h-5 w-5 text-brand" />
                 <span class="mt-3 font-semibold">{c.label}</span>
@@ -109,59 +111,10 @@ const field =
         }
       </ul>
 
-      <div id="form-sent" class="mt-10 hidden rounded-2xl border border-rule bg-card p-8 text-center" role="status">
-        <h3 class="text-2xl font-semibold tracking-tight">Thanks — got it.</h3>
-        <p class="mt-2 text-muted">I'll get back to you as soon as I can. Talk soon!</p>
-      </div>
-
-      <form
-        id="contact-form"
-        method="post"
-        action={leadsEndpoint}
-        class="mt-10 space-y-5 rounded-2xl border border-rule bg-card p-6 shadow-sm sm:p-8"
-      >
-        <label class="block text-sm font-medium">Your name<input name="name" required autocomplete="name" class={field} /></label>
-        <label class="block text-sm font-medium"
-          >Phone or email<input name="contact" required autocomplete="email" class={field} /></label
-        >
-        <label class="block text-sm font-medium">
-          What are you hoping to do? <span class="font-normal text-muted">(optional)</span>
-          <textarea name="message" rows="4" class={field}></textarea>
-        </label>
-
-        <!-- Spam trap: hidden from people, filled in by bots. -->
-        <div class="hidden" aria-hidden="true">
-          <label>Company<input name="company" tabindex="-1" autocomplete="off" /></label>
-        </div>
-        <input type="hidden" name="topic" value="General" />
-        <input type="hidden" name="form" value="contact" />
-        <input type="hidden" name="source" />
-        <input type="hidden" name="t" />
-        <input type="hidden" name="page" />
-
-        <p id="form-error" class="hidden rounded-lg bg-brand/10 px-4 py-3 text-sm" role="alert">
-          Sorry, that didn't go through. Please text me at
-          <a href={agent.sms} class="font-semibold underline">{agent.phoneDisplay}</a> instead.
-        </p>
-
-        <button
-          type="submit"
-          class="w-full rounded-full bg-brand px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
-          >Send</button
-        >
-        <p class="text-center text-sm text-muted">I'll reply personally, as soon as I can. No spam, no pressure.</p>
-        <label class="flex items-start gap-3 border-t border-rule pt-5 text-sm">
-          <input type="checkbox" name="email_ok" value="yes" class="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-brand" />
-          <span>
-            <span class="font-medium">Also add me to your neighborhood list.</span>
-            <span class="text-muted">Event invites and market updates, a few emails a season.</span>
-          </span>
-        </label>
-      </form>
     </div>
   </section>
 
-  <!-- Phones: keep the contact button in reach until the form is on screen. -->
+  <!-- Phones: keep the contact button in reach until the contact options are on screen. -->
   <a
     id="sticky-cta"
     href={contactCta.href}
@@ -170,73 +123,8 @@ const field =
   >
 
   <script>
-    const form = document.getElementById("contact-form") as HTMLFormElement;
-    const sent = document.getElementById("form-sent")!;
-    const error = document.getElementById("form-error")!;
-    const button = form.querySelector("button")!;
-    const params = new URLSearchParams(location.search);
-    const input = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
-    const contact = input("contact");
-    const listOk = input("email_ok");
-
-    const showSent = () => {
-      form.classList.add("hidden");
-      sent.classList.remove("hidden");
-    };
-
-    // Joining the list needs an email address in the contact field.
-    const validate = () => {
-      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.value.trim());
-      contact.setCustomValidity(listOk.checked && !isEmail ? "Please enter an email address to join the list." : "");
-    };
-    contact.addEventListener("input", validate);
-    listOk.addEventListener("change", validate);
-
-    // Old links carry what they were about, e.g. /?topic=Selling from the old seller page.
-    const topic = params.get("topic");
-    if (topic) input("topic").value = topic;
-    const starters: Record<string, string> = {
-      Selling: "I'd like to know what a buyer would pay for my house.",
-      Buying: "I'm thinking about buying and would love to talk.",
-      Renting: "I'm looking for a rental and would love some help.",
-      Investing: "I'd love to hear about off-market properties. My buy box: ",
-    };
-    const message = form.elements.namedItem("message") as HTMLTextAreaElement;
-    if (topic && starters[topic] && !message.value) message.value = starters[topic];
-    if (params.has("list")) listOk.checked = true;
-    validate();
-
-    // Where the visitor came from, e.g. /?src=postcard-fall#contact
-    input("source").value = params.get("src") ?? document.referrer;
-    input("t").value = String(Date.now());
-    input("page").value = location.pathname;
-    if (params.has("sent")) showSent();
-    if (params.has("error")) error.classList.remove("hidden");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      validate();
-      if (!form.reportValidity()) return;
-      error.classList.add("hidden");
-      button.disabled = true;
-      button.textContent = "Sending…";
-      try {
-        const res = await fetch(form.action, {
-          method: "POST",
-          body: new FormData(form),
-          headers: { Accept: "application/json" },
-        });
-        if (!res.ok) throw new Error(String(res.status));
-        showSent();
-      } catch {
-        error.classList.remove("hidden");
-        button.disabled = false;
-        button.textContent = "Send";
-      }
-    });
-
     // The sticky phone button only shows when neither the hero's own Contact
-    // button nor the form is on screen.
+    // button nor the contact section is on screen.
     const sticky = document.getElementById("sticky-cta")!;
     const onScreen = new Set<Element>();
     const observer = new IntersectionObserver((entries) => {
@@ -247,5 +135,5 @@ const field =
       sticky.classList.toggle("pointer-events-none", hide);
     });
     observer.observe(document.getElementById("hero-cta")!);
-    observer.observe(form);
+    observer.observe(document.getElementById("contact")!);
   </script>
