@@ -25,19 +25,19 @@ const { youtubeId, title } = heroVideo;
   />
   <!-- Photo stays at full brightness; only this rounded, frosted panel sits behind the text. -->
   <div class="container-px mx-auto w-full max-w-2xl py-16">
-    <div class="rounded-3xl bg-black/55 px-6 py-10 text-center text-white shadow-2xl shadow-black/30 ring-1 ring-white/15 backdrop-blur-md sm:px-12 sm:py-12">
+    <div class="rounded-3xl bg-black/40 px-6 py-8 text-center text-white shadow-2xl shadow-black/30 ring-1 ring-white/15 backdrop-blur-xs sm:px-12 sm:py-12">
     <img
       src={agent.photo}
       alt={agent.name}
-      class="mx-auto h-28 w-28 rounded-full bg-stone-100 object-cover shadow-2xl shadow-black/40 sm:h-32 sm:w-32"
+      class="mx-auto h-24 w-24 rounded-full bg-stone-100 object-cover shadow-2xl shadow-black/40 sm:h-32 sm:w-32"
       width="128"
       height="128"
       fetchpriority="high"
     />
-    <h1 class="mt-7 text-4xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-6xl">
+    <h1 class="mt-6 text-3xl font-semibold leading-[1.05] tracking-tight text-balance [text-shadow:0_2px_8px_rgb(0_0_0/0.45)] sm:text-6xl">
       {agent.tagline}
     </h1>
-    <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/90 sm:text-xl">
+    <p class="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.6)] sm:mt-5 sm:text-xl">
       Navigate today's real estate market with a trusted advisor.
     </p>
     <div class="mt-9 flex flex-col items-center gap-4">
@@ -58,7 +58,7 @@ const { youtubeId, title } = heroVideo;
             Watch my story
           </button>
         ) : (
-          <a href={agent.sms} class="inline-flex items-center gap-2 text-sm font-semibold text-white hover:underline">
+          <a href={agent.sms} class="inline-flex items-center gap-2 text-sm font-semibold text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.6)] hover:underline">
             <Icon name="message" class="h-4 w-4" />
             Or text {agent.phoneDisplay}
           </a>
