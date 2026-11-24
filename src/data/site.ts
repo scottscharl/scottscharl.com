@@ -9,7 +9,7 @@ export const agent = {
   email: "hello@scottscharl.com",
   facebook: "https://facebook.com/scottscharlrealtor",
   office: {
-    street: "423 South Washington Ave",
+    street: "423 S. Washington Ave",
     city: "Royal Oak",
     region: "MI",
     zip: "48067",
@@ -18,9 +18,10 @@ export const agent = {
   tagline: "Home is waiting.",
 };
 
-// The branding video in the hero (horizontal, 16:9). Paste the YouTube video ID
-// (the part after "v=" or "youtu.be/") once it's uploaded; unlisted is fine.
-// While it's empty, the hero shows the neighborhood park photo instead.
+// The branding video (horizontal, 16:9). Paste the YouTube video ID (the part
+// after "v=" or "youtu.be/") once it's uploaded; unlisted is fine. Then the hero
+// shows a "Watch my story" button that plays it full screen. While it's empty,
+// the hero shows the "Or text" link instead.
 export const heroVideo = {
   youtubeId: "",
   title: "Meet Scott Scharl",

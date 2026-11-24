@@ -1,7 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
-import HeroVideo from "../components/HeroVideo.astro";
+import Hero from "../components/Hero.astro";
 import { agent, contactCta, leadsEndpoint } from "../data/site";
 
 const field =
@@ -12,40 +12,12 @@ const field =
   title="Scott Scharl | Home is waiting. — Keller Williams Metro, Royal Oak"
   description="Scott Scharl, REALTOR® with Keller Williams Metro in Royal Oak, helps buyers, sellers, renters and investors across Metro Detroit."
 >
-  <!-- Hero -->
-  <section class="container-px mx-auto max-w-5xl pb-16 pt-14 text-center sm:pb-20 sm:pt-20">
-    <h1 class="text-5xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-7xl">{agent.tagline}</h1>
-    <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
-      Navigate today's market with a trusted advisor.
-    </p>
-    <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-8">
-      <a
-        href={contactCta.href}
-        class="rounded-full bg-brand px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand/20 transition-colors hover:bg-brand-dark"
-        >{contactCta.label}</a
-      >
-      <a href={agent.sms} class="inline-flex items-center gap-2 text-sm font-semibold hover:text-brand">
-        <Icon name="message" class="h-4 w-4 text-brand" />
-        Or text {agent.phoneDisplay}
-      </a>
-    </div>
-    <div class="mt-12">
-      <HeroVideo />
-    </div>
-  </section>
+  <Hero />
 
   <!-- About -->
   <section id="about" class="scroll-mt-16 border-t border-rule bg-sand/60">
     <div class="container-px mx-auto max-w-3xl py-16 text-center sm:py-20">
-      <img
-        src={agent.photo}
-        alt={agent.name}
-        class="mx-auto h-28 w-28 rounded-full bg-stone-100 object-cover shadow-lg shadow-black/10"
-        width="112"
-        height="112"
-        loading="lazy"
-      />
-      <h2 class="mt-6 text-3xl font-semibold tracking-tight sm:text-4xl">Hi, I'm Scott.</h2>
+      <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Hi, I'm Scott.</h2>
       <p class="mt-5 text-lg leading-relaxed text-ink/80">
         I'm a REALTOR® with {agent.brokerage}. I was born in Royal Oak, grew up in Troy, and my wife and I are now
         proud homeowners back in Royal Oak.
@@ -213,11 +185,18 @@ const field =
       }
     });
 
-    // Hide the sticky phone button while the contact section is on screen.
+    // The sticky phone button only shows when neither the hero's own Contact
+    // button nor the form is on screen.
     const sticky = document.getElementById("sticky-cta")!;
-    new IntersectionObserver(([entry]) => {
-      sticky.classList.toggle("translate-y-24", entry.isIntersecting);
-      sticky.classList.toggle("opacity-0", entry.isIntersecting);
-    }).observe(document.getElementById("contact")!);
+    const onScreen = new Set<Element>();
+    const observer = new IntersectionObserver((entries) => {
+      for (const e of entries) e.isIntersecting ? onScreen.add(e.target) : onScreen.delete(e.target);
+      const hide = onScreen.size > 0;
+      sticky.classList.toggle("translate-y-24", hide);
+      sticky.classList.toggle("opacity-0", hide);
+      sticky.classList.toggle("pointer-events-none", hide);
+    });
+    observer.observe(document.getElementById("hero-cta")!);
+    observer.observe(form);
   </script>
 </Base>
