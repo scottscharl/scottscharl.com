@@ -1,0 +1,24 @@
+---
+// E. Big portrait: the arms-crossed photo fills the hero, white text over the dark side.
+import { Picture } from "astro:assets";
+import HeroText from "./HeroText.astro";
+import portrait from "../../assets/photos/scott-arms-crossed.jpg";
+---
+
+<section id="hero" class="relative isolate flex min-h-[88svh] items-end overflow-hidden md:items-center">
+  <Picture
+    src={portrait}
+    formats={["avif", "webp"]}
+    widths={[800, 1200, 1600]}
+    sizes="100vw"
+    alt="Scott Scharl in his office, arms crossed, with a photo of the Detroit skyline behind him"
+    class="absolute inset-0 -z-20 h-full w-full object-cover object-[60%_22%]"
+    pictureAttributes={{ class: "contents" }}
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="absolute inset-0 -z-10 bg-linear-to-t from-black/80 via-black/30 to-transparent md:bg-linear-to-r md:from-black/70 md:via-black/35 md:to-transparent"></div>
+  <div class="container-px mx-auto w-full max-w-6xl pb-14 pt-32 md:py-32">
+    <div class="md:max-w-xl"><HeroText align="left" tone="light" headshot={false} /></div>
+  </div>
+</section>

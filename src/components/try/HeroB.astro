@@ -1,0 +1,27 @@
+---
+// B. Scott (cut out) standing in the neighborhood photo, words on a soft white fade.
+import { Picture } from "astro:assets";
+import HeroText from "./HeroText.astro";
+import park from "../../assets/photos/neighborhood-park.jpg";
+import cutout from "../../assets/photos/scott-arms-crossed-cutout.png";
+const cutoutAlt = "Scott Scharl, arms crossed, smiling";
+---
+
+<section id="hero" class="relative md:flex md:min-h-[88vh] md:items-center">
+  <!-- Desktop: photo fills the hero, Scott stands on the right, text on a fade at the left. -->
+  <div class="absolute inset-0 hidden overflow-hidden md:block">
+    <Picture src={park} formats={["avif", "webp"]} widths={[1200, 1800]} sizes="100vw" alt="" class="h-full w-full object-cover" pictureAttributes={{ class: "contents" }} loading="eager" />
+    <div class="absolute inset-y-0 left-0 w-3/5 bg-linear-to-r from-paper via-paper/90 to-transparent"></div>
+    <Picture src={cutout} formats={["avif", "webp"]} widths={[600, 900]} sizes="30vw" alt={cutoutAlt} class="absolute bottom-0 right-[7%] h-[90%] w-auto" pictureAttributes={{ class: "contents" }} loading="eager" />
+  </div>
+  <div class="container-px relative mx-auto w-full max-w-6xl">
+    <div class="pb-8 pt-10 md:max-w-xl md:py-32"><HeroText align="left" /></div>
+  </div>
+  <!-- Phones: the same scene as a card below the text. -->
+  <div class="container-px pb-14 md:hidden">
+    <div class="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl shadow-black/10">
+      <Picture src={park} formats={["avif", "webp"]} widths={[600, 900]} sizes="100vw" alt="" class="h-full w-full object-cover" pictureAttributes={{ class: "contents" }} />
+      <Picture src={cutout} formats={["avif", "webp"]} widths={[400, 600]} sizes="60vw" alt={cutoutAlt} class="absolute bottom-0 left-1/2 h-[88%] w-auto -translate-x-1/2" pictureAttributes={{ class: "contents" }} />
+    </div>
+  </div>
+</section>

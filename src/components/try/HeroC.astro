@@ -1,0 +1,33 @@
+---
+// C. Calm and editorial: centered words, then two photos side by side.
+import { Picture } from "astro:assets";
+import HeroText from "./HeroText.astro";
+import portrait from "../../assets/photos/scott-arms-crossed.jpg";
+import park from "../../assets/photos/neighborhood-park.jpg";
+---
+
+<section id="hero" class="pb-16 pt-12 md:pb-20 md:pt-32">
+  <div class="container-px mx-auto max-w-3xl"><HeroText headshot={false} /></div>
+  <div class="container-px mx-auto mt-12 grid max-w-6xl gap-4 sm:grid-cols-2">
+    <Picture
+      src={portrait}
+      formats={["avif", "webp"]}
+      widths={[400, 640, 960]}
+      sizes="(min-width: 640px) 50vw, 100vw"
+      alt="Scott Scharl in his office, arms crossed, with a photo of the Detroit skyline behind him"
+      class="aspect-[4/5] w-full rounded-3xl object-cover object-top"
+      pictureAttributes={{ class: "block" }}
+      loading="eager"
+    />
+    <Picture
+      src={park}
+      formats={["avif", "webp"]}
+      widths={[400, 640, 960]}
+      sizes="(min-width: 640px) 50vw, 100vw"
+      alt="Neighbors at Scott's food truck night in a Royal Oak pocket park"
+      class="aspect-[4/5] w-full rounded-3xl object-cover"
+      pictureAttributes={{ class: "block" }}
+      loading="eager"
+    />
+  </div>
+</section>

@@ -5,8 +5,10 @@ import { agent, contactCta } from "../data/site";
 interface Props {
   title: string;
   description: string;
+  /** Keep a page out of search results (e.g. temporary test pages). */
+  noindex?: boolean;
 }
-const { title, description } = Astro.props;
+const { title, description, noindex = false } = Astro.props;
 const year = new Date().getFullYear();
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
@@ -37,6 +39,7 @@ const schema = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -52,6 +55,8 @@ const schema = {
       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
       >Skip to main content</a
     >
+
+    <slot name="banner" />
 
     <!-- Phones: a regular full-width bar. Desktop: a rounded, frosted bar floating over the top of the hero photo. -->
     <header

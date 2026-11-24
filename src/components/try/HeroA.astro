@@ -1,0 +1,25 @@
+---
+// A. Split: words on the page background, tall portrait beside them.
+import { Picture } from "astro:assets";
+import HeroText from "./HeroText.astro";
+import portrait from "../../assets/photos/scott-arms-crossed.jpg";
+---
+
+<section id="hero" class="pb-16 pt-10 md:pb-20 md:pt-32">
+  <div class="container-px mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-16">
+    <div class="order-2 md:order-1"><HeroText align="left" headshot={false} /></div>
+    <div class="order-1 md:order-2">
+      <Picture
+        src={portrait}
+        formats={["avif", "webp"]}
+        widths={[400, 640, 960, 1280]}
+        sizes="(min-width: 768px) 45vw, 80vw"
+        alt="Scott Scharl in his office, arms crossed, with a photo of the Detroit skyline behind him"
+        class="mx-auto aspect-[4/5] w-full max-w-sm rounded-3xl object-cover object-top shadow-xl shadow-black/15 md:max-w-none"
+        pictureAttributes={{ class: "block" }}
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+  </div>
+</section>

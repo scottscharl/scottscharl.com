@@ -1,0 +1,56 @@
+---
+// Headline, intro line and the stacked buttons, shared by the test hero layouts.
+import Icon from "../Icon.astro";
+import { agent, contactCta } from "../../data/site";
+
+interface Props {
+  align?: "center" | "left";
+  tone?: "dark" | "light";
+  /** Show Scott's headshot inside the Contact button. */
+  headshot?: boolean;
+}
+const { align = "center", tone = "dark", headshot = true } = Astro.props;
+const left = align === "left";
+const light = tone === "light";
+---
+
+<div
+  class:list={[
+    "flex flex-col items-center text-center",
+    left && "md:items-start md:text-left",
+    light ? "text-white" : "text-ink",
+  ]}
+>
+  <h1 class="text-4xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-6xl">
+    <Icon name="home" class="-mt-[0.12em] mr-[0.2em] inline-block h-[0.85em] w-[0.85em] align-middle text-brand" />{
+      agent.tagline
+    }
+  </h1>
+  <p class:list={["mt-4 max-w-xl text-lg leading-relaxed text-balance sm:mt-5 sm:text-xl", light ? "text-white/90" : "text-ink/80"]}>
+    I'm Scott Scharl, a Royal Oak REALTOR® with Keller Williams Metro.
+  </p>
+  <div class:list={["mt-8 flex flex-col items-center gap-4", left && "md:items-start"]}>
+    <a
+      id="hero-cta"
+      href={contactCta.href}
+      class:list={[
+        "inline-flex items-center gap-3 rounded-full bg-brand text-base font-semibold text-white shadow-lg shadow-brand/20 transition-colors hover:bg-brand-dark",
+        headshot ? "py-1.5 pl-1.5 pr-7" : "px-8 py-3.5",
+      ]}
+    >
+      {
+        headshot && (
+          <img src={agent.photo} alt="" class="h-10 w-10 rounded-full bg-stone-100 object-cover" width="40" height="40" />
+        )
+      }
+      {contactCta.label}
+    </a>
+    <a
+      href={agent.sms}
+      class:list={["inline-flex items-center gap-2 text-sm font-semibold", light ? "text-white hover:underline" : "text-ink hover:text-brand"]}
+    >
+      <Icon name="message" class:list={["h-4 w-4", light ? "text-white" : "text-brand"]} />
+      Or text {agent.phoneDisplay}
+    </a>
+  </div>
+</div>

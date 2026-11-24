@@ -1,0 +1,35 @@
+---
+// TEMPORARY: one page per hero layout idea, for comparing. Delete with src/components/try/.
+import Base from "../../layouts/Base.astro";
+import PageBody from "../../components/PageBody.astro";
+import LayoutSwitcher from "../../components/try/LayoutSwitcher.astro";
+import HeroA from "../../components/try/HeroA.astro";
+import HeroB from "../../components/try/HeroB.astro";
+import HeroC from "../../components/try/HeroC.astro";
+import HeroD from "../../components/try/HeroD.astro";
+import HeroE from "../../components/try/HeroE.astro";
+
+export function getStaticPaths() {
+  return ["a", "b", "c", "d", "e"].map((layout) => ({ params: { layout } }));
+}
+
+const { layout } = Astro.params;
+const Hero = { a: HeroA, b: HeroB, c: HeroC, d: HeroD, e: HeroE }[layout as "a"];
+// Layouts that show the portrait up top use the park photo in About, and vice versa.
+const aboutPhoto = ({ a: "park", b: "portrait", c: "park", d: "portrait", e: "park" } as const)[layout as "a"];
+---
+
+<Base title={`Layout ${layout.toUpperCase()} | Scott Scharl`} description="Layout comparison (temporary)." noindex>
+  <LayoutSwitcher slot="banner" current={layout} />
+  <Hero />
+  <PageBody aboutPhoto={aboutPhoto} />
+</Base>
+
+<style is:global>
+  /* The comparison bar sits above everything; push the floating desktop header below it. */
+  @media (min-width: 768px) {
+    .site-header {
+      top: 3.25rem;
+    }
+  }
+</style>
