@@ -10,8 +10,10 @@ interface Props {
   headshot?: boolean;
   /** "large" bumps the headline up on wide screens, for layouts with a wide text column. */
   size?: "default" | "large";
+  /** Show the KW Metro logo under the buttons. */
+  logo?: boolean;
 }
-const { align = "center", tone = "dark", headshot = true, size = "default" } = Astro.props;
+const { align = "center", tone = "dark", headshot = true, size = "default", logo = false } = Astro.props;
 const left = align === "left";
 const light = tone === "light";
 ---
@@ -55,4 +57,5 @@ const light = tone === "light";
       Or text {agent.phoneDisplay}
     </a>
   </div>
+  {logo && <img src="/kw-metro.png" alt={agent.brokerage} class="mt-8 h-9 w-auto" width="97" height="36" />}
 </div>
