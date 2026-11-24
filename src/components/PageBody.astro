@@ -17,7 +17,7 @@ const about =
     ? { src: park, alt: "Neighbors at Scott's food truck night in a Royal Oak pocket park" }
     : { src: portrait, alt: "Scott Scharl in his office, arms crossed, with a photo of the Detroit skyline behind him" };
 
-const facts = ["Born in Royal Oak", "Royal Oak homeowner", "Starter condos to million-dollar listings"];
+const showPlaceholders = import.meta.env.DEV && reviews.length === 0;
 
 const field =
   "mt-1.5 w-full rounded-lg border border-rule bg-card px-3.5 py-2.5 text-base outline-none focus:border-ink focus:ring-2 focus:ring-ink/10";
@@ -37,49 +37,43 @@ const field =
         loading="lazy"
       />
       <div class="mx-auto max-w-[60ch] text-center md:mx-0 md:text-left">
-        <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Hi, I'm Scott Scharl.</h2>
+        <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Your local guide.</h2>
         <p class="mt-5 text-lg leading-relaxed text-ink/85">
-          I was born at the hospital two miles from the Royal Oak home my wife and I own today. I grew up in Troy,
-          and moving back here was coming home.
+          Buying or selling a home is a big, emotional decision. You deserve someone who listens first, explains
+          every step, and gives you straight answers with no pressure.
         </p>
         <p class="mt-4 text-lg leading-relaxed text-ink/85">
-          This summer my family and I hosted a food truck night for our neighbors. That's the kind of agent I want
-          to be: someone you already know from down the street.
+          That's what I'll do for you. I was born in Royal Oak and my wife and I own our home here, so I know these
+          streets as a neighbor. And I've sold everything from starter condos to million-dollar listings, so you get
+          experience at every price point.
         </p>
-        <p class="mt-4 text-lg leading-relaxed text-ink/85">
-          I'm with {agent.brokerage} in downtown Royal Oak, and I've sold everything from starter condos to
-          million-dollar listings, including four years in the Phoenix market. You'll get straight answers and no
-          pressure.
-        </p>
-        <ul class="mt-6 flex flex-col gap-2 text-sm font-medium md:items-start">
-          {
-            facts.map((f) => (
-              <li class="inline-flex items-center justify-center gap-2 md:justify-start">
-                <Icon name="check" class="h-4 w-4 shrink-0 text-brand" />
-                {f}
-              </li>
-            ))
-          }
-        </ul>
       </div>
     </div>
   </section>
 
-  <!-- Reviews (hidden until quotes are added in src/data/site.ts) -->
+  <!-- Testimonials. Real quotes come from `reviews` in src/data/site.ts. Until there are some, dashed
+       placeholders show on the local dev server only; the live site hides the section. -->
   {
-    reviews.length > 0 && (
+    (reviews.length > 0 || showPlaceholders) && (
       <section class="border-t border-rule">
         <div class="container-px mx-auto max-w-3xl py-16 sm:py-20">
-          <h2 class="text-center text-3xl font-semibold tracking-tight sm:text-4xl">What neighbors say</h2>
+          <h2 class="text-center text-3xl font-semibold tracking-tight sm:text-4xl">What clients say</h2>
           <div class="mt-8 flex flex-col gap-5">
-            {reviews.map((r) => (
-              <figure class="rounded-2xl border border-rule bg-card p-6 sm:p-8">
-                <blockquote class="text-lg leading-relaxed text-ink/85">“{r.quote}”</blockquote>
-                <figcaption class="mt-4 text-sm font-semibold">
-                  {r.name} <span class="font-normal text-muted">· {r.town}</span>
-                </figcaption>
-              </figure>
-            ))}
+            {reviews.length > 0
+              ? reviews.map((r) => (
+                  <figure class="rounded-2xl border border-rule bg-card p-6 sm:p-8">
+                    <blockquote class="text-lg leading-relaxed text-ink/85">“{r.quote}”</blockquote>
+                    <figcaption class="mt-4 text-sm font-semibold">
+                      {r.name} <span class="font-normal text-muted">· {r.town}</span>
+                    </figcaption>
+                  </figure>
+                ))
+              : [1, 2, 3].map((n) => (
+                  <figure class="rounded-2xl border-2 border-dashed border-rule p-6 sm:p-8">
+                    <blockquote class="text-lg leading-relaxed text-muted">“Client quote {n} goes here.”</blockquote>
+                    <figcaption class="mt-4 text-sm text-muted">First name · Town</figcaption>
+                  </figure>
+                ))}
           </div>
         </div>
       </section>
@@ -89,7 +83,7 @@ const field =
   <!-- Contact -->
   <section id="contact" class="scroll-mt-16 border-t border-rule">
     <div class="container-px mx-auto max-w-2xl py-16 sm:py-24">
-      <h2 class="text-center text-4xl font-semibold tracking-tight sm:text-5xl">Let's talk.</h2>
+      <h2 class="text-center text-4xl font-semibold tracking-tight sm:text-5xl">Tell me where you're headed.</h2>
       <p class="mt-4 text-center text-lg text-muted">
         Text, call or email, whatever's easiest. Or send a note and I'll get back to you as soon as I can.
       </p>
@@ -131,7 +125,7 @@ const field =
           >Phone or email<input name="contact" required autocomplete="email" class={field} /></label
         >
         <label class="block text-sm font-medium">
-          How can I help? <span class="font-normal text-muted">(optional)</span>
+          What are you hoping to do? <span class="font-normal text-muted">(optional)</span>
           <textarea name="message" rows="4" class={field}></textarea>
         </label>
 
