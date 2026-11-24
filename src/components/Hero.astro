@@ -23,15 +23,9 @@ const { youtubeId, title } = heroVideo;
     loading="eager"
     fetchpriority="high"
   />
-  <!-- Tint: a light wash over the whole photo, plus a soft darker patch right behind the text so it stays legible. -->
-  <div class="absolute inset-0 -z-10 bg-black/30" aria-hidden="true"></div>
-  <div
-    class="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_85%_46%_at_50%_62%,rgb(0_0_0/0.78),transparent)] md:bg-[radial-gradient(ellipse_50%_42%_at_50%_64%,rgb(0_0_0/0.68),transparent)]"
-    aria-hidden="true"
-  >
-  </div>
-
-  <div class="container-px mx-auto w-full max-w-4xl py-16 text-center text-white">
+  <!-- Photo stays at full brightness; only this rounded, frosted panel sits behind the text. -->
+  <div class="container-px mx-auto w-full max-w-2xl py-16">
+    <div class="rounded-3xl bg-black/55 px-6 py-10 text-center text-white shadow-2xl shadow-black/30 ring-1 ring-white/15 backdrop-blur-md sm:px-12 sm:py-12">
     <img
       src={agent.photo}
       alt={agent.name}
@@ -40,10 +34,10 @@ const { youtubeId, title } = heroVideo;
       height="128"
       fetchpriority="high"
     />
-    <h1 class="mt-8 text-5xl font-semibold leading-[1.05] tracking-tight text-balance drop-shadow-md sm:text-7xl">
+    <h1 class="mt-7 text-4xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-6xl">
       {agent.tagline}
     </h1>
-    <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/90 drop-shadow sm:text-xl">
+    <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/90 sm:text-xl">
       Navigate today's real estate market with a trusted advisor.
     </p>
     <div class="mt-9 flex flex-col items-center gap-4">
@@ -70,6 +64,7 @@ const { youtubeId, title } = heroVideo;
           </a>
         )
       }
+    </div>
     </div>
   </div>
 </section>
