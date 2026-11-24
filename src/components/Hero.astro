@@ -1,96 +1,42 @@
 ---
-// The hero: full-width neighborhood photo with Scott's headshot, the tagline and
-// the Contact button laid over it. A dark tint keeps the white text legible.
-// When a YouTube ID is set in src/data/site.ts, a "Watch my story" button opens
-// the branding video in a full-screen player (YouTube only loads on tap).
+// The hero: a wide neighborhood banner with Scott's round headshot overlapping its
+// bottom edge, then the headline, intro line and buttons. With a YouTube ID in
+// src/data/site.ts, "Watch my story" opens the branding video in a full-screen player.
 import { Picture } from "astro:assets";
-import Icon from "./Icon.astro";
+import HeroText from "./HeroText.astro";
 import park from "../assets/photos/neighborhood-park.jpg";
-import { agent, contactCta, heroVideo } from "../data/site";
-
-const { youtubeId, title } = heroVideo;
+import { agent, heroVideo } from "../data/site";
 ---
 
-<section
-  id="hero"
-  class="relative isolate flex min-h-[82svh] items-center overflow-hidden md:min-h-[88vh]"
->
-  <Picture
-    src={park}
-    formats={["avif", "webp"]}
-    widths={[600, 900, 1200, 1800]}
-    sizes="100vw"
-    alt=""
-    class="absolute inset-0 -z-20 h-full w-full object-cover"
-    pictureAttributes={{ class: "contents" }}
-    loading="eager"
-    fetchpriority="high"
-  />
-  <!-- Photo stays at full brightness; the text sits on a rounded, frosted white panel. -->
-  <div class="container-px mx-auto w-full max-w-2xl py-16">
-    <div class="rounded-3xl bg-white/[0.88] px-6 py-8 text-center text-ink shadow-2xl shadow-black/20 ring-1 ring-black/5 backdrop-blur-xs sm:px-12 sm:py-12">
-      <img
-        src={agent.photo}
-        alt={agent.name}
-        class="mx-auto mb-6 h-28 w-28 rounded-full bg-stone-100 object-cover shadow-lg shadow-black/10 sm:h-32 sm:w-32"
-        width="128"
-        height="128"
-        fetchpriority="high"
-      />
-      <h1 class="text-3xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-6xl">
-        <Icon
-          name="home"
-          class="-mt-[0.12em] mr-[0.2em] inline-block h-[0.85em] w-[0.85em] align-middle text-brand"
-        />
-        {agent.tagline}
-      </h1>
-      <p class="mx-auto mt-4 max-w-xl text-base leading-relaxed text-balance text-ink/85 sm:mt-5 sm:text-xl">
-        I'm Scott Scharl, a REALTOR® serving clients in Royal Oak and Metro
-        Detroit, Michigan.
-      </p>
-      <div class="mt-9 flex flex-col items-center gap-4">
-        <a
-          id="hero-cta"
-          href={contactCta.href}
-          class="rounded-full bg-brand px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand/20 transition-colors hover:bg-brand-dark"
-        >
-          {contactCta.label}
-        </a>
-        {youtubeId ? (
-          <button
-            type="button"
-            id="watch-video"
-            class="inline-flex items-center gap-2 rounded-full bg-ink/5 px-6 py-3.5 text-base font-semibold text-ink ring-1 ring-ink/20 transition-colors hover:bg-ink/10"
-          >
-            <Icon name="play" class="h-4 w-4" />
-            Watch my story
-          </button>
-        ) : (
-          <a
-            href={agent.sms}
-            class="inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-brand"
-          >
-            <Icon name="message" class="h-4 w-4 text-brand" />
-            Or text {agent.phoneDisplay}
-          </a>
-        )}
-      </div>
-      <img
-        src="/kw-metro.png"
-        alt={agent.brokerage}
-        class="mx-auto mt-7 h-8 w-auto sm:mt-8 sm:h-9"
-        width="97"
-        height="36"
-      />
-    </div>
+<section id="hero" class="pb-16 pt-6 md:py-12">
+  <div class="container-px mx-auto max-w-6xl">
+    <Picture
+      src={park}
+      formats={["avif", "webp"]}
+      widths={[600, 900, 1200, 1800]}
+      sizes="(min-width: 1152px) 1152px, 100vw"
+      alt="Neighbors at Scott's food truck night in a Royal Oak pocket park"
+      class="aspect-[4/3] w-full rounded-3xl object-cover md:aspect-[21/8]"
+      pictureAttributes={{ class: "block" }}
+      loading="eager"
+      fetchpriority="high"
+    />
+    <img
+      src={agent.photo}
+      alt={agent.name}
+      class="relative mx-auto -mt-16 h-32 w-32 rounded-full bg-stone-100 object-cover shadow-xl shadow-black/20 md:-mt-20 md:h-40 md:w-40"
+      width="160"
+      height="160"
+    />
+    <div class="mt-6"><HeroText headshot={false} /></div>
   </div>
 </section>
 
-{youtubeId && (
+{heroVideo.youtubeId && (
   <dialog
     id="video-dialog"
-    data-youtube-id={youtubeId}
-    data-title={title}
+    data-youtube-id={heroVideo.youtubeId}
+    data-title={heroVideo.title}
     class="m-auto w-full max-w-5xl bg-transparent p-4 backdrop:bg-black/85"
   >
     <div
@@ -108,7 +54,7 @@ const { youtubeId, title } = heroVideo;
   </dialog>
 )}
 
-{youtubeId && <script>
+{heroVideo.youtubeId && <script>
   const dialog = document.getElementById("video-dialog") as HTMLDialogElement;
   const frame = document.getElementById("video-frame")!;
   document.getElementById("watch-video")?.addEventListener("click", () => {

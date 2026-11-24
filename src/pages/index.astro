@@ -2,14 +2,12 @@
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import PageBody from "../components/PageBody.astro";
-import LayoutSwitcher from "../components/try/LayoutSwitcher.astro";
 ---
 
 <Base
   title="Scott Scharl | Home is waiting. — Keller Williams Metro, Royal Oak"
   description="Scott Scharl, REALTOR® with Keller Williams Metro in Royal Oak, helps buyers, sellers, renters and investors across Metro Detroit."
 >
-  <LayoutSwitcher slot="banner" current="current" />
   <Hero />
   <PageBody />
 </Base>

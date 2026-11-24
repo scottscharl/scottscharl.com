@@ -1,21 +1,14 @@
 ---
 // Everything below the hero: About, reviews, contact form, sticky phone button.
-// Shared by the home page and the temporary layout comparison pages.
 import Icon from "./Icon.astro";
 import { Picture } from "astro:assets";
 import portrait from "../assets/photos/scott-arms-crossed.jpg";
-import park from "../assets/photos/neighborhood-park.jpg";
 import { agent, contactCta, reviews } from "../data/site";
 
-interface Props {
-  /** Which photo sits beside the About text. */
-  aboutPhoto?: "portrait" | "park";
-}
-const { aboutPhoto = "portrait" } = Astro.props;
-const about =
-  aboutPhoto === "park"
-    ? { src: park, alt: "Neighbors at Scott's food truck night in a Royal Oak pocket park" }
-    : { src: portrait, alt: "Scott Scharl in his office, arms crossed, with a photo of the Detroit skyline behind him" };
+const about = {
+  src: portrait,
+  alt: "Scott Scharl in his office, arms crossed, with a photo of the Detroit skyline behind him",
+};
 
 const showPlaceholders = import.meta.env.DEV && reviews.length === 0;
 

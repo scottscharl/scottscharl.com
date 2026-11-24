@@ -1,7 +1,8 @@
 ---
-// Headline, intro line and the stacked buttons, shared by the test hero layouts.
-import Icon from "../Icon.astro";
-import { agent, contactCta } from "../../data/site";
+// Headline, intro line and the stacked buttons for the hero. With a YouTube ID in
+// src/data/site.ts, "Watch my story" (opens the full-screen player) replaces the text link.
+import Icon from "./Icon.astro";
+import { agent, contactCta, heroVideo } from "../data/site";
 
 interface Props {
   align?: "center" | "left";
@@ -49,13 +50,26 @@ const light = tone === "light";
       }
       {contactCta.label}
     </a>
-    <a
-      href={agent.sms}
-      class:list={["inline-flex items-center gap-2 text-sm font-semibold", light ? "text-white hover:underline" : "text-ink hover:text-brand"]}
-    >
-      <Icon name="message" class:list={["h-4 w-4", light ? "text-white" : "text-brand"]} />
-      Or text {agent.phoneDisplay}
-    </a>
+    {
+      heroVideo.youtubeId ? (
+        <button
+          type="button"
+          id="watch-video"
+          class="inline-flex items-center gap-2 rounded-full bg-ink/5 px-6 py-3 text-base font-semibold text-ink ring-1 ring-ink/20 transition-colors hover:bg-ink/10"
+        >
+          <Icon name="play" class="h-4 w-4" />
+          Watch my story
+        </button>
+      ) : (
+        <a
+          href={agent.sms}
+          class:list={["inline-flex items-center gap-2 text-sm font-semibold", light ? "text-white hover:underline" : "text-ink hover:text-brand"]}
+        >
+          <Icon name="message" class:list={["h-4 w-4", light ? "text-white" : "text-brand"]} />
+          Or text {agent.phoneDisplay}
+        </a>
+      )
+    }
   </div>
   {logo && <img src="/kw-metro.png" alt={agent.brokerage} class="mt-8 h-9 w-auto" width="97" height="36" />}
 </div>
