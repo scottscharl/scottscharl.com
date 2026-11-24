@@ -2,7 +2,11 @@
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
 import Hero from "../components/Hero.astro";
-import { agent, contactCta, leadsEndpoint } from "../data/site";
+import { Picture } from "astro:assets";
+import portrait from "../assets/photos/scott-arms-crossed.jpg";
+import { agent, contactCta, leadsEndpoint, reviews } from "../data/site";
+
+const facts = ["Born in Royal Oak", "Royal Oak homeowner", "Starter condos to million-dollar listings"];
 
 const field =
   "mt-1.5 w-full rounded-lg border border-rule bg-card px-3.5 py-2.5 text-base outline-none focus:border-ink focus:ring-2 focus:ring-ink/10";
@@ -15,19 +19,67 @@ const field =
   <Hero />
 
   <!-- About -->
-  <section id="about" class="scroll-mt-16 md:scroll-mt-24 border-t border-rule bg-sand/60">
-    <div class="container-px mx-auto max-w-3xl py-16 text-center sm:py-20">
-      <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Hi, I'm Scott Scharl.</h2>
-      <p class="mt-5 text-lg leading-relaxed text-ink/80">
-        I'm a REALTOR® with {agent.brokerage}. I was born in Royal Oak, grew up in Troy, and my wife and I are now
-        proud homeowners back in Royal Oak.
-      </p>
-      <p class="mt-4 text-lg leading-relaxed text-ink/80">
-        I sold real estate in the Phoenix area from 2015 to 2019, from starter homes to million-dollar luxury. Now I
-        help buyers, sellers, renters and investors across Metro Detroit, with straight answers and no pressure.
-      </p>
+  <section id="about" class="scroll-mt-16 border-t border-rule bg-sand/60 md:scroll-mt-24">
+    <div class="container-px mx-auto grid max-w-5xl items-center gap-10 py-16 sm:py-20 md:grid-cols-[minmax(0,20rem)_1fr] md:gap-14">
+      <Picture
+        src={portrait}
+        formats={["avif", "webp"]}
+        widths={[400, 640, 960]}
+        sizes="(min-width: 768px) 320px, 80vw"
+        alt="Scott Scharl in his office, arms crossed, with a photo of the Detroit skyline behind him"
+        class="mx-auto aspect-[4/5] w-full max-w-xs rounded-3xl object-cover object-top shadow-xl shadow-black/15 md:max-w-none"
+        pictureAttributes={{ class: "block" }}
+        loading="lazy"
+      />
+      <div class="mx-auto max-w-[60ch] text-center md:mx-0 md:text-left">
+        <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Hi, I'm Scott Scharl.</h2>
+        <p class="mt-5 text-lg leading-relaxed text-ink/85">
+          I was born at the hospital two miles from the Royal Oak home my wife and I own today. I grew up in Troy,
+          and moving back here was coming home.
+        </p>
+        <p class="mt-4 text-lg leading-relaxed text-ink/85">
+          This summer my family and I hosted a food truck night for our neighbors. That's the kind of agent I want
+          to be: someone you already know from down the street.
+        </p>
+        <p class="mt-4 text-lg leading-relaxed text-ink/85">
+          I'm with {agent.brokerage} in downtown Royal Oak, and I've sold everything from starter condos to
+          million-dollar listings, including four years in the Phoenix market. You'll get straight answers and no
+          pressure.
+        </p>
+        <ul class="mt-6 flex flex-col gap-2 text-sm font-medium md:items-start">
+          {
+            facts.map((f) => (
+              <li class="inline-flex items-center justify-center gap-2 md:justify-start">
+                <Icon name="check" class="h-4 w-4 shrink-0 text-brand" />
+                {f}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
   </section>
+
+  <!-- Reviews (hidden until quotes are added in src/data/site.ts) -->
+  {
+    reviews.length > 0 && (
+      <section class="border-t border-rule">
+        <div class="container-px mx-auto max-w-3xl py-16 sm:py-20">
+          <h2 class="text-center text-3xl font-semibold tracking-tight sm:text-4xl">What neighbors say</h2>
+          <div class="mt-8 flex flex-col gap-5">
+            {reviews.map((r) => (
+              <figure class="rounded-2xl border border-rule bg-card p-6 sm:p-8">
+                <blockquote class="text-lg leading-relaxed text-ink/85">“{r.quote}”</blockquote>
+                <figcaption class="mt-4 text-sm font-semibold">
+                  {r.name} <span class="font-normal text-muted">· {r.town}</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   <!-- Contact -->
   <section id="contact" class="scroll-mt-16 md:scroll-mt-24 border-t border-rule">
@@ -70,20 +122,12 @@ const field =
         class="mt-10 space-y-5 rounded-2xl border border-rule bg-card p-6 shadow-sm sm:p-8"
       >
         <label class="block text-sm font-medium">Your name<input name="name" required autocomplete="name" class={field} /></label>
-        <div class="grid gap-5 sm:grid-cols-2">
-          <label class="block text-sm font-medium">Phone<input name="phone" type="tel" autocomplete="tel" class={field} /></label>
-          <label class="block text-sm font-medium">Email<input name="email" type="email" autocomplete="email" class={field} /></label>
-        </div>
+        <label class="block text-sm font-medium"
+          >Phone or email<input name="contact" required autocomplete="email" class={field} /></label
+        >
         <label class="block text-sm font-medium">
           How can I help? <span class="font-normal text-muted">(optional)</span>
           <textarea name="message" rows="4" class={field}></textarea>
-        </label>
-        <label class="flex items-start gap-3 text-sm">
-          <input type="checkbox" name="email_ok" value="yes" class="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-brand" />
-          <span>
-            <span class="font-medium">Add me to your neighborhood list.</span>
-            <span class="text-muted">Event invites, market updates and local favorites. A few emails a season.</span>
-          </span>
         </label>
 
         <!-- Spam trap: hidden from people, filled in by bots. -->
@@ -106,6 +150,14 @@ const field =
           class="w-full rounded-full bg-brand px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
           >Send</button
         >
+        <p class="text-center text-sm text-muted">I'll reply personally, as soon as I can. No spam, no pressure.</p>
+        <label class="flex items-start gap-3 border-t border-rule pt-5 text-sm">
+          <input type="checkbox" name="email_ok" value="yes" class="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-brand" />
+          <span>
+            <span class="font-medium">Also add me to your neighborhood list.</span>
+            <span class="text-muted">Event invites and market updates, a few emails a season.</span>
+          </span>
+        </label>
       </form>
     </div>
   </section>
@@ -125,8 +177,7 @@ const field =
     const button = form.querySelector("button")!;
     const params = new URLSearchParams(location.search);
     const input = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
-    const phone = input("phone");
-    const email = input("email");
+    const contact = input("contact");
     const listOk = input("email_ok");
 
     const showSent = () => {
@@ -134,12 +185,12 @@ const field =
       sent.classList.remove("hidden");
     };
 
-    // Need a phone or an email; joining the list needs an email.
+    // Joining the list needs an email address in the contact field.
     const validate = () => {
-      email.required = listOk.checked;
-      phone.setCustomValidity(phone.value.trim() || email.value.trim() ? "" : "Please add a phone number or email.");
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.value.trim());
+      contact.setCustomValidity(listOk.checked && !isEmail ? "Please enter an email address to join the list." : "");
     };
-    [phone, email, listOk].forEach((el) => el.addEventListener("input", validate));
+    contact.addEventListener("input", validate);
     listOk.addEventListener("change", validate);
 
     // Old links carry what they were about, e.g. /?topic=Selling from the old seller page.

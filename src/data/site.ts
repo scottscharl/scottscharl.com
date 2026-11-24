@@ -14,7 +14,7 @@ export const agent = {
     region: "MI",
     zip: "48067",
   },
-  photo: "/profile.png",
+  photo: "/headshot.jpg",
   tagline: "Home is waiting.",
 };
 
@@ -36,3 +36,8 @@ export const contactCta = {
   href: "/#contact",
   label: "Contact Scott",
 };
+
+export type Review = { quote: string; name: string; town: string };
+
+// Client quotes (first name + town). The reviews section appears once this has entries.
+export const reviews: Review[] = [];
