@@ -8,9 +8,15 @@ const field =
   "mt-1.5 w-full rounded-lg border border-rule bg-card px-3.5 py-2.5 text-base outline-none focus:border-ink focus:ring-2 focus:ring-ink/10";
 ---
 
-<div id="form-sent" class="hidden rounded-2xl border border-rule bg-card p-8 text-center" role="status">
+<div
+  id="form-sent"
+  class="hidden rounded-2xl border border-rule bg-card p-8 text-center"
+  role="status"
+>
   <h3 class="text-2xl font-semibold tracking-tight">Thanks — got it.</h3>
-  <p class="mt-2 text-muted">I'll get back to you as soon as I can. Talk soon!</p>
+  <p class="mt-2 text-muted">
+    I'm looking forward to connecting with you soon!
+  </p>
 </div>
 
 <form
@@ -19,18 +25,26 @@ const field =
   action={leadsEndpoint}
   class="space-y-5 rounded-2xl border border-rule bg-card p-6 shadow-sm sm:p-8"
 >
-  <label class="block text-sm font-medium">Your name<input name="name" required autocomplete="name" class={field} /></label>
-  <label class="block text-sm font-medium"
-    >Phone or email<input name="contact" required autocomplete="email" class={field} /></label
-  >
   <label class="block text-sm font-medium">
-    What are you hoping to do? <span class="font-normal text-muted">(optional)</span>
-    <textarea name="message" rows="4" class={field}></textarea>
+    Your name
+    <input name="name" required autocomplete="name" class={field} />
+  </label>
+  <label class="block text-sm font-medium">
+    Phone or email
+    <input name="contact" required autocomplete="email" class={field} />
+  </label>
+  <label class="block text-sm font-medium">
+    How can I help you?{" "}
+    <!-- <span class="font-normal text-muted">(optional)</span> -->
+    <textarea name="message" rows="4" class={field} required></textarea>
   </label>
 
   <!-- Spam trap: hidden from people, filled in by bots. -->
   <div class="hidden" aria-hidden="true">
-    <label>Company<input name="company" tabindex="-1" autocomplete="off" /></label>
+    <label>
+      Company
+      <input name="company" tabindex="-1" autocomplete="off" />
+    </label>
   </div>
   <input type="hidden" name="topic" value="General" />
   <input type="hidden" name="form" value="contact" />
@@ -38,22 +52,39 @@ const field =
   <input type="hidden" name="t" />
   <input type="hidden" name="page" />
 
-  <p id="form-error" class="hidden rounded-lg bg-brand/10 px-4 py-3 text-sm" role="alert">
+  <p
+    id="form-error"
+    class="hidden rounded-lg bg-brand/10 px-4 py-3 text-sm"
+    role="alert"
+  >
     Sorry, that didn't go through. Please text me at
-    <a href={agent.sms} class="font-semibold underline">{agent.phoneDisplay}</a> instead.
+    <a href={agent.sms} class="font-semibold underline">
+      {agent.phoneDisplay}
+    </a>{" "}
+    instead.
   </p>
 
   <button
     type="submit"
     class="w-full rounded-full bg-brand px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-60"
-    >Send</button
   >
-  <p class="text-center text-sm text-muted">I'll reply personally, as soon as I can. No spam, no pressure.</p>
+    Send
+  </button>
+  <!-- <p class="text-center text-sm text-muted">
+    I'll reply personally, as soon as I can. No AI!
+  </p> -->
   <label class="flex items-start gap-3 border-t border-rule pt-5 text-sm">
-    <input type="checkbox" name="email_ok" value="yes" class="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-brand" />
+    <input
+      type="checkbox"
+      name="email_ok"
+      value="yes"
+      class="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-brand"
+    />
     <span>
-      <span class="font-medium">Also add me to your neighborhood list.</span>
-      <span class="text-muted">Event invites and market updates, a few emails a season.</span>
+      <span class="font-medium">Join my neighborhood newsletter.</span>
+      <span class="text-muted">
+        Event invites and market updates, a few emails a season.
+      </span>
     </span>
   </label>
 </form>
@@ -64,7 +95,8 @@ const field =
   const error = document.getElementById("form-error")!;
   const button = form.querySelector("button")!;
   const params = new URLSearchParams(location.search);
-  const input = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
+  const input = (name: string) =>
+    form.elements.namedItem(name) as HTMLInputElement;
   const contact = input("contact");
   const listOk = input("email_ok");
 
@@ -76,7 +108,11 @@ const field =
   // Joining the list needs an email address in the contact field.
   const validate = () => {
     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.value.trim());
-    contact.setCustomValidity(listOk.checked && !isEmail ? "Please enter an email address to join the list." : "");
+    contact.setCustomValidity(
+      listOk.checked && !isEmail
+        ? "Please enter an email address to join the list."
+        : "",
+    );
   };
   contact.addEventListener("input", validate);
   listOk.addEventListener("change", validate);
@@ -91,7 +127,8 @@ const field =
     Investing: "I'd love to hear about off-market properties. My buy box: ",
   };
   const message = form.elements.namedItem("message") as HTMLTextAreaElement;
-  if (topic && starters[topic] && !message.value) message.value = starters[topic];
+  if (topic && starters[topic] && !message.value)
+    message.value = starters[topic];
   if (params.has("list")) listOk.checked = true;
   validate();
 
