@@ -37,7 +37,30 @@ export const contactCta = {
   label: "Contact Scott",
 };
 
-export type Review = { quote: string; name: string; town: string };
+export type Review = { quote: string; name: string; town: string; source?: string };
 
-// Client quotes (first name + town). The reviews section appears once this has entries.
-export const reviews: Review[] = [];
+// Client quotes. The "What clients say" section shows these (or placeholders on the dev
+// server while this is empty). The current three are from Scott's Phoenix years.
+export const reviews: Review[] = [
+  {
+    quote:
+      "Scott responded very quickly to all my property showing requests. He listened to what I was looking for in a house and worked with me to help me find properties that were within my budget and had the things that were most important to me. Scott is personable, knowledgeable, and has made this whole process much easier. I know he has my best interests in mind.",
+    name: "Home buyer",
+    town: "Phoenix, AZ",
+    source: "Zillow",
+  },
+  {
+    quote:
+      "Scott listened to our concerns well. Scott followed up on all questions we had not only timely but in detail. He was extremely punctual, professional and offered any help he could to assist us. He showed us the property with interest to our needs with a great level of patience.",
+    name: "Home buyer",
+    town: "Mesa, AZ",
+    source: "Zillow",
+  },
+  {
+    quote:
+      "Scott's awesome and personable. He really works hard to find something that works for you. He's understanding of your circumstances and never fails to follow up. Definitely would recommend him.",
+    name: "Dshawn C.",
+    town: "Scottsdale, AZ",
+    source: "Zillow",
+  },
+];

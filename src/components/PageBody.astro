@@ -62,7 +62,7 @@ const showPlaceholders = import.meta.env.DEV && reviews.length === 0;
                   <figure class="rounded-2xl border border-rule bg-card p-6 sm:p-8">
                     <blockquote class="text-lg leading-relaxed text-ink/85">“{r.quote}”</blockquote>
                     <figcaption class="mt-4 text-sm font-semibold">
-                      {r.name} <span class="font-normal text-muted">· {r.town}</span>
+                      {r.name} <span class="font-normal text-muted">· {r.town}{r.source && ` · ${r.source}`}</span>
                     </figcaption>
                   </figure>
                 ))
