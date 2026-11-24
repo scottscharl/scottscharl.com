@@ -66,6 +66,13 @@ const schema = {
     >
       <div class="container-px mx-auto flex h-16 max-w-6xl items-center justify-between">
         <a href="/" class="flex items-center gap-3" aria-label={`${agent.name}, ${agent.brokerage} — home`}>
+          <img
+            src={agent.photo}
+            alt=""
+            class="h-10 w-10 rounded-full bg-stone-100 object-cover"
+            width="40"
+            height="40"
+          />
           <span class="whitespace-nowrap text-lg font-semibold tracking-tight">{agent.name}</span>
           <span class="h-6 w-px bg-rule" aria-hidden="true"></span>
           <img src="/kw-metro.png" alt="" class="h-7 w-auto" width="76" height="28" />

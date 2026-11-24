@@ -9,11 +9,18 @@ import { agent } from "../data/site";
   description="Send Scott Scharl, REALTOR® with Keller Williams Metro in Royal Oak, a quick note about buying, selling, renting or investing."
 >
   <section class="container-px mx-auto max-w-2xl pb-16 pt-28 sm:pb-24 sm:pt-32">
-    <h1 class="text-center text-4xl font-semibold tracking-tight sm:text-5xl">Send me a message.</h1>
+    <h1 class="text-center text-4xl font-semibold tracking-tight sm:text-5xl">
+      Send me a message.
+    </h1>
     <p class="mx-auto mt-4 max-w-xl text-center text-lg leading-relaxed text-muted">
-      Tell me what you're hoping to do, and I'll get back to you personally. Rather talk?
-      <a href={agent.sms} class="font-semibold text-ink hover:text-brand">Text {agent.phoneDisplay}</a>.
+      I'll get back to you personally. Rather talk?
+      <a href={agent.sms} class="font-semibold text-ink hover:text-brand">
+        Text {agent.phoneDisplay}
+      </a>
+      .
     </p>
-    <div class="mt-10"><ContactForm /></div>
+    <div class="mt-10">
+      <ContactForm />
+    </div>
   </section>
 </Base>

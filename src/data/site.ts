@@ -50,7 +50,7 @@ export const reviews: Review[] = [
   {
     quote:
       "Scott listened to our concerns well. Scott followed up on all questions we had not only timely but in detail. He was extremely punctual, professional and offered any help he could to assist us. He showed us the property with interest to our needs with a great level of patience.",
-    name: "Home buyer",
+    name: "Amit L.",
   },
   {
     quote:
