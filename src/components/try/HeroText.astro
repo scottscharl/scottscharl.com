@@ -8,8 +8,10 @@ interface Props {
   tone?: "dark" | "light";
   /** Show Scott's headshot inside the Contact button. */
   headshot?: boolean;
+  /** "large" bumps the headline up on wide screens, for layouts with a wide text column. */
+  size?: "default" | "large";
 }
-const { align = "center", tone = "dark", headshot = true } = Astro.props;
+const { align = "center", tone = "dark", headshot = true, size = "default" } = Astro.props;
 const left = align === "left";
 const light = tone === "light";
 ---
@@ -21,12 +23,12 @@ const light = tone === "light";
     light ? "text-white" : "text-ink",
   ]}
 >
-  <h1 class="text-4xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-6xl">
+  <h1 class:list={["text-4xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-6xl", size === "large" && "lg:text-7xl"]}>
     <Icon name="home" class="-mt-[0.12em] mr-[0.2em] inline-block h-[0.85em] w-[0.85em] align-middle text-brand" />{
       agent.tagline
     }
   </h1>
-  <p class:list={["mt-4 max-w-xl text-lg leading-relaxed text-balance sm:mt-5 sm:text-xl", light ? "text-white/90" : "text-ink/80"]}>
+  <p class:list={["mt-4 max-w-xl text-lg leading-relaxed text-balance sm:mt-5 sm:text-xl", size === "large" && "lg:max-w-2xl lg:text-2xl", light ? "text-white/90" : "text-ink/80"]}>
     I'm Scott Scharl with Keller Williams Metro, serving clients in Royal Oak and throughout Metro Detroit.
   </p>
   <div class:list={["mt-8 flex flex-col items-center gap-4", left && "md:items-start"]}>

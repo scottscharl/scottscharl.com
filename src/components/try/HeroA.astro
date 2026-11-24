@@ -1,19 +1,19 @@
 ---
-// A. Split: tall portrait on the left, words on the page background to its right.
+// A. Split, rule of thirds: tall portrait in the left third, words in the right two thirds.
 import { Picture } from "astro:assets";
 import HeroText from "./HeroText.astro";
 import portrait from "../../assets/photos/scott-arms-crossed.jpg";
 ---
 
 <section id="hero" class="pb-16 pt-10 md:py-20">
-  <div class="container-px mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
-    <div class="order-2"><HeroText align="left" headshot={false} /></div>
+  <div class="container-px mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1fr_2fr] md:gap-16">
+    <div class="order-2"><HeroText align="left" headshot={false} size="large" /></div>
     <div class="order-1">
       <Picture
         src={portrait}
         formats={["avif", "webp"]}
         widths={[400, 640, 960, 1280]}
-        sizes="(min-width: 768px) 45vw, 80vw"
+        sizes="(min-width: 768px) 33vw, 80vw"
         alt="Scott Scharl in his office, arms crossed, with a photo of the Detroit skyline behind him"
         class="mx-auto aspect-[4/5] w-full max-w-sm rounded-3xl object-cover object-top shadow-xl shadow-black/15 md:max-w-none"
         pictureAttributes={{ class: "block" }}
