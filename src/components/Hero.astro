@@ -23,43 +23,44 @@ const { youtubeId, title } = heroVideo;
     loading="eager"
     fetchpriority="high"
   />
-  <!-- Photo stays at full brightness; only this rounded, frosted panel sits behind the text. -->
+  <!-- Photo stays at full brightness; the text sits on a rounded, frosted white panel. -->
   <div class="container-px mx-auto w-full max-w-2xl py-16">
-    <div class="rounded-3xl bg-black/40 px-6 py-8 text-center text-white shadow-2xl shadow-black/30 ring-1 ring-white/15 backdrop-blur-xs sm:px-12 sm:py-12">
-    <img
-      src={agent.photo}
-      alt={agent.name}
-      class="mx-auto h-24 w-24 rounded-full bg-stone-100 object-cover shadow-2xl shadow-black/40 sm:h-32 sm:w-32"
-      width="128"
-      height="128"
-      fetchpriority="high"
-    />
-    <h1 class="mt-6 text-3xl font-semibold leading-[1.05] tracking-tight text-balance [text-shadow:0_2px_8px_rgb(0_0_0/0.45)] sm:text-6xl">
+    <div class="rounded-3xl bg-white/95 px-6 py-8 text-center text-ink shadow-2xl shadow-black/20 ring-1 ring-black/5 backdrop-blur-xs sm:px-12 sm:py-12">
+    <h1 class="text-3xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-6xl">
       {agent.tagline}
     </h1>
-    <p class="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.6)] sm:mt-5 sm:text-xl">
-      Navigate today's real estate market with a trusted advisor.
+    <p class="mx-auto mt-4 max-w-xl text-base leading-relaxed text-balance text-ink/75 sm:mt-5 sm:text-xl">
+      Navigate today's real estate market with a trusted local advisor.
     </p>
     <div class="mt-9 flex flex-col items-center gap-4">
       <a
         id="hero-cta"
         href={contactCta.href}
-        class="rounded-full bg-brand px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-black/30 transition-colors hover:bg-brand-dark"
-        >{contactCta.label}</a
+        class="inline-flex items-center gap-3 rounded-full bg-brand py-1.5 pl-1.5 pr-7 text-base font-semibold text-white shadow-lg shadow-brand/20 transition-colors hover:bg-brand-dark"
       >
+        <img
+          src={agent.photo}
+          alt=""
+          class="h-10 w-10 rounded-full bg-stone-100 object-cover"
+          width="40"
+          height="40"
+          fetchpriority="high"
+        />
+        {contactCta.label}
+      </a>
       {
         youtubeId ? (
           <button
             type="button"
             id="watch-video"
-            class="inline-flex items-center gap-2 rounded-full bg-white/15 px-6 py-3.5 text-base font-semibold text-white ring-1 ring-white/40 backdrop-blur-sm transition-colors hover:bg-white/25"
+            class="inline-flex items-center gap-2 rounded-full bg-ink/5 px-6 py-3.5 text-base font-semibold text-ink ring-1 ring-ink/20 transition-colors hover:bg-ink/10"
           >
             <Icon name="play" class="h-4 w-4" />
             Watch my story
           </button>
         ) : (
-          <a href={agent.sms} class="inline-flex items-center gap-2 text-sm font-semibold text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.6)] hover:underline">
-            <Icon name="message" class="h-4 w-4" />
+          <a href={agent.sms} class="inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-brand">
+            <Icon name="message" class="h-4 w-4 text-brand" />
             Or text {agent.phoneDisplay}
           </a>
         )
