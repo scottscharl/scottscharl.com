@@ -1,15 +1,17 @@
 ---
 import "../styles/global.css";
-import Icon from "../components/Icon.astro";
-import PumpkinfestBar from "../components/PumpkinfestBar.astro";
-import { agent, contactCta, nav } from "../data/site";
+import { agent, contactCta } from "../data/site";
+import Banners from "../components/Banners.astro";
 
 interface Props {
   title: string;
   description: string;
+  /** Keep a page out of search results (e.g. temporary test pages). */
+  noindex?: boolean;
+  /** True on the home page, where the top bar stays hidden until the hero scrolls away. */
+  hasHero?: boolean;
 }
-const { title, description } = Astro.props;
-const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const { title, description, noindex = false, hasHero = false } = Astro.props;
 const year = new Date().getFullYear();
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
@@ -40,13 +42,14 @@ const schema = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL(agent.photo, Astro.site)} />
-    <link rel="icon" type="image/png" href="/profile.png" />
+    <link rel="icon" type="image/jpeg" href="/headshot.jpg" />
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   </head>
   <body class="flex min-h-screen flex-col bg-paper text-ink antialiased">
@@ -56,73 +59,48 @@ const schema = {
       >Skip to main content</a
     >
 
-    <header class="site-header sticky top-0 z-50 border-b border-rule bg-paper/90 backdrop-blur-md">
+    <Banners belowHeader={!hasHero} />
+
+    <!-- Hidden while the hero photo is on screen; slides in as a solid white bar once you scroll past it. -->
+    <header
+      id="site-header"
+      class="fixed inset-x-0 top-0 z-50 -translate-y-full border-b border-rule bg-white transition-transform duration-300"
+      inert
+    >
       <div class="container-px mx-auto flex h-16 max-w-6xl items-center justify-between">
         <a href="/" class="flex items-center gap-3" aria-label={`${agent.name}, ${agent.brokerage} — home`}>
+          <img
+            src={agent.photo}
+            alt=""
+            class="h-10 w-10 rounded-full bg-stone-100 object-cover"
+            width="40"
+            height="40"
+          />
           <span class="whitespace-nowrap text-lg font-semibold tracking-tight">{agent.name}</span>
-          <span class="h-6 w-px bg-rule" aria-hidden="true"></span>
-          <img src="/kw-metro.png" alt="" class="h-7 w-auto" width="76" height="28" />
+          <span class="hidden h-6 w-px bg-rule sm:block" aria-hidden="true"></span>
+          <img src="/kw-metro.png" alt="" class="hidden h-7 w-auto sm:block" width="76" height="28" />
         </a>
-
-        <nav class="hidden items-center gap-6 md:flex lg:gap-8" aria-label="Primary">
-          {
-            nav.map((item) => (
-              <a
-                href={item.href}
-                aria-current={path === item.href ? "page" : undefined}
-                class="whitespace-nowrap text-sm font-medium text-muted transition-colors hover:text-ink aria-[current=page]:text-ink"
-              >
-                {item.label}
-              </a>
-            ))
-          }
+        <div class="flex items-center gap-4 sm:gap-5">
+          <a href="/" class="whitespace-nowrap text-sm font-semibold text-muted transition-colors hover:text-ink">Home</a>
+          <a href="/my-story" class="whitespace-nowrap text-sm font-semibold text-muted transition-colors hover:text-ink">My Story</a>
           <a
             href={contactCta.href}
-            class="whitespace-nowrap rounded-full bg-brand px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
+            class="hidden whitespace-nowrap rounded-full bg-brand px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark sm:inline-flex"
             >{contactCta.label}</a
           >
-        </nav>
-
-        <button
-          type="button"
-          id="menu-toggle"
-          class="inline-flex h-10 w-10 items-center justify-center md:hidden"
-          aria-label="Open menu"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-        >
-          <Icon name="menu" class="h-5 w-5" />
-        </button>
-      </div>
-
-      <nav id="mobile-menu" class="hidden border-t border-rule md:hidden" aria-label="Mobile">
-        <div class="container-px flex flex-col py-2">
-          {
-            [...nav, contactCta].map((item) => (
-              <a href={item.href} class="whitespace-nowrap py-3 text-base font-medium">
-                {item.label}
-              </a>
-            ))
-          }
         </div>
-      </nav>
+      </div>
     </header>
-
-    <PumpkinfestBar />
 
     <main id="main-content" class="flex-1">
       <slot />
     </main>
 
-    <footer class="border-t border-rule">
+    <footer class="border-t border-rule pb-20 sm:pb-0">
       <div class="container-px mx-auto max-w-6xl space-y-2 py-10 text-center text-xs leading-relaxed text-muted">
         <img src="/kw-metro.png" alt={agent.brokerage} class="mx-auto mb-4 h-10 w-auto" width="108" height="40" loading="lazy" />
         <p class="text-sm font-semibold text-ink">{agent.name} · {agent.title}</p>
-        <p>
-          <a href="/stay-in-touch" class="font-semibold text-brand hover:underline"
-            >Stay in touch: neighborhood events, market updates & local favorites →</a
-          >
-        </p>
+        <p><a href="/my-story" class="font-semibold text-ink hover:text-brand">My Story</a></p>
         <p>
           {agent.office.street}, {agent.office.city}, {agent.office.region} {agent.office.zip}
           {agent.license && ` · Michigan License #${agent.license}`}
@@ -133,16 +111,20 @@ const schema = {
         </p>
       </div>
     </footer>
-
     <script>
-      const toggle = document.getElementById("menu-toggle");
-      const menu = document.getElementById("mobile-menu");
-      toggle?.addEventListener("click", () => {
-        const open = toggle.getAttribute("aria-expanded") === "true";
-        toggle.setAttribute("aria-expanded", String(!open));
-        toggle.setAttribute("aria-label", open ? "Open menu" : "Close menu");
-        menu?.classList.toggle("hidden", open);
-      });
+      // Show the header only once the hero (#hero) has scrolled out of view.
+      // Pages without a hero show it all the time.
+      const header = document.getElementById("site-header")!;
+      // Banners stick just under the top bar; on the home page they sit at the very top until the bar slides in.
+      const banners = document.getElementById("banners");
+      const hero = document.getElementById("hero");
+      const show = (visible: boolean) => {
+        header.classList.toggle("-translate-y-full", !visible);
+        header.inert = !visible;
+        if (banners && hero) banners.style.top = visible ? "4rem" : "0";
+      };
+      if (hero) new IntersectionObserver(([entry]) => show(!entry.isIntersecting)).observe(hero);
+      else show(true);
     </script>
   </body>
 </html>

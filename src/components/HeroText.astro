@@ -1,0 +1,75 @@
+---
+// Headline, intro line and the stacked buttons for the hero. With a YouTube ID in
+// src/data/site.ts, "Watch my story" (opens the full-screen player) replaces the text link.
+import Icon from "./Icon.astro";
+import { agent, contactCta, heroVideo } from "../data/site";
+
+interface Props {
+  align?: "center" | "left";
+  tone?: "dark" | "light";
+  /** Show Scott's headshot inside the Contact button. */
+  headshot?: boolean;
+  /** "large" bumps the headline up on wide screens, for layouts with a wide text column. */
+  size?: "default" | "large";
+  /** Show the KW Metro logo under the buttons. */
+  logo?: boolean;
+}
+const { align = "center", tone = "dark", headshot = true, size = "default", logo = false } = Astro.props;
+const left = align === "left";
+const light = tone === "light";
+---
+
+<div
+  class:list={[
+    "flex flex-col items-center text-center",
+    left && "md:items-start md:text-left",
+    light ? "text-white" : "text-ink",
+  ]}
+>
+  <h1 class:list={["text-4xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-6xl", size === "large" && "lg:text-7xl"]}>
+    <Icon name="home" class="-mt-[0.12em] mr-[0.2em] inline-block h-[0.85em] w-[0.85em] align-middle text-brand" />{
+      agent.tagline
+    }
+  </h1>
+  <p class:list={["mt-4 max-w-xl text-lg leading-relaxed text-balance sm:mt-5 sm:text-xl", size === "large" && "lg:max-w-2xl lg:text-2xl", light ? "text-white/90" : "text-ink/80"]}>
+    I'm Scott Scharl, a REALTOR® serving clients in Royal Oak and Metro Detroit.
+  </p>
+  <div class:list={["mt-8 flex flex-col items-center gap-4", left && "md:items-start"]}>
+    <a
+      id="hero-cta"
+      href={contactCta.href}
+      class:list={[
+        "inline-flex items-center gap-3 rounded-full bg-brand text-base font-semibold text-white shadow-lg shadow-brand/20 transition-colors hover:bg-brand-dark",
+        headshot ? "py-1.5 pl-1.5 pr-7" : "px-8 py-3.5",
+      ]}
+    >
+      {
+        headshot && (
+          <img src={agent.photo} alt="" class="h-10 w-10 rounded-full bg-stone-100 object-cover" width="40" height="40" />
+        )
+      }
+      {contactCta.label}
+    </a>
+    {
+      heroVideo.youtubeId ? (
+        <button
+          type="button"
+          id="watch-video"
+          class="inline-flex items-center gap-2 rounded-full bg-ink/5 px-6 py-3 text-base font-semibold text-ink ring-1 ring-ink/20 transition-colors hover:bg-ink/10"
+        >
+          <Icon name="play" class="h-4 w-4" />
+          Watch my story
+        </button>
+      ) : (
+        <a
+          href={agent.sms}
+          class:list={["inline-flex items-center gap-2 text-sm font-semibold", light ? "text-white hover:underline" : "text-ink hover:text-brand"]}
+        >
+          <Icon name="message" class:list={["h-4 w-4", light ? "text-white" : "text-brand"]} />
+          Or text {agent.phoneDisplay}
+        </a>
+      )
+    }
+  </div>
+  {logo && <img src="/kw-metro.png" alt={agent.brokerage} class="mt-8 h-9 w-auto" width="97" height="36" />}
+</div>

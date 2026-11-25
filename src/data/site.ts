@@ -9,103 +9,52 @@ export const agent = {
   email: "hello@scottscharl.com",
   facebook: "https://facebook.com/scottscharlrealtor",
   office: {
-    street: "423 South Washington Ave",
+    street: "423 S. Washington Ave",
     city: "Royal Oak",
     region: "MI",
     zip: "48067",
   },
-  photo: "/profile.png",
+  photo: "/headshot.jpg",
   tagline: "Home is waiting.",
 };
 
-// Services (src/pages/_services.astro) and Market Report are hidden from the menu for now.
-export const nav = [
-  { href: "/", label: "Home" },
-  { href: "/my-story", label: "My Story" },
-];
+// The branding video (horizontal, 16:9). Paste the YouTube video ID (the part
+// after "v=" or "youtu.be/") once it's uploaded; unlisted is fine. Then the hero
+// shows a "Watch my story" button that plays it full screen. While it's empty,
+// the hero shows the "Or text" link instead.
+export const heroVideo = {
+  youtubeId: "",
+  title: "Meet Scott Scharl",
+};
 
-// Both forms post straight to lead-grabber (leads.scharl.dev), which saves the lead
+// The form posts straight to lead-grabber (leads.scharl.dev), which saves the lead
 // and alerts Scott. Set PUBLIC_LEADS_URL=http://localhost:3000 to test against a local copy.
 export const leadsEndpoint = `${import.meta.env.PUBLIC_LEADS_URL ?? "https://leads.scharl.dev"}/api/leads/website`;
 
-// The one main (red) call to action, used everywhere.
+// The one main (red) call to action: jumps to the form on the home page.
 export const contactCta = {
-  href: "/contact",
+  href: "/#contact",
   label: "Contact Scott",
 };
 
-// The seller offer: a secondary link, not a red button.
-export const priceCta = {
-  href: "/what-would-a-buyer-pay",
-  label: "Selling? See what buyers would pay",
-};
+export type Review = { quote: string; name: string; source?: string };
 
-export type Service = {
-  slug: string;
-  title: string;
-  short: string;
-  icon: string;
-  /** Where the "Who I help" box links. */
-  href: string;
-  linkLabel: string;
-  points: string[];
-};
-
-export const services: Service[] = [
+// Client quotes. The "What clients say" section shows these (or placeholders on the dev
+// server while this is empty). Shown with name and source only (no dates or locations).
+export const reviews: Review[] = [
   {
-    slug: "sellers",
-    title: "Sellers",
-    icon: "yard-sign",
-    href: "/what-would-a-buyer-pay",
-    linkLabel: "See what buyers would pay",
-    short: "A realistic price and strong negotiation.",
-    points: [
-      "A free, honest look at what buyers would pay, with no obligation to list",
-      "Prep advice focused on what buyers in your area value",
-      "Professional marketing through Keller Williams and the MLS",
-    ],
+    quote:
+      "Scott responded very quickly to all my property showing requests. He listened to what I was looking for in a house and worked with me to help me find properties that were within my budget and had the things that were most important to me. Scott is personable, knowledgeable, and has made this whole process much easier. I know he has my best interests in mind.",
+    name: "Lauren C.",
   },
   {
-    slug: "buyers",
-    title: "Buyers",
-    icon: "home",
-    href: "/contact?topic=Buying",
-    linkLabel: "A place that's yours to keep",
-    short: "Honest guidance and strong negotiation.",
-    points: [
-      "A plan built around your budget, timeline and must-haves",
-      "My honest take on pricing for every home you tour",
-      "Offer strategy, negotiation and support through closing",
-    ],
+    quote:
+      "Scott listened to our concerns well. Scott followed up on all questions we had not only timely but in detail. He was extremely punctual, professional and offered any help he could to assist us. He showed us the property with interest to our needs with a great level of patience.",
+    name: "Amit L.",
   },
   {
-    slug: "renters",
-    title: "Renters",
-    icon: "key",
-    href: "/contact?topic=Renting",
-    linkLabel: "Love where you live",
-    short: "Move into an area you love!",
-    points: [
-      "Rentals matched to your budget, location and move-in date",
-      "Each property's application requirements, explained",
-    ],
-  },
-  {
-    slug: "investors",
-    title: "Investors",
-    icon: "trend",
-    href: "/contact?topic=Investing",
-    linkLabel: "Get off-market properties",
-    short: "Off-market deals that fit your buy box.",
-    points: [
-      "Rent comparables and local rental demand",
-      "Single-family and small multi-family opportunities",
-    ],
+    quote:
+      "Scott's awesome and personable. He really works hard to find something that works for you. He's understanding of your circumstances and never fails to follow up. Definitely would recommend him.",
+    name: "Dshawn C.",
   },
 ];
-
-export type Review = { quote: string; name: string; location: string };
-
-// TODO: add your own client reviews (e.g. from Google or Zillow).
-// The reviews section stays hidden until this list has entries.
-export const reviews: Review[] = [];

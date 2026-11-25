@@ -1,0 +1,138 @@
+---
+// Everything below the hero: About, reviews, contact form, sticky phone button.
+import Icon from "./Icon.astro";
+import { Picture } from "astro:assets";
+import portrait from "../assets/photos/scott-arms-crossed.jpg";
+import { agent, contactCta, reviews } from "../data/site";
+
+const about = {
+  src: portrait,
+  alt: "Scott Scharl in his office, arms crossed, with a photo of the Detroit skyline behind him",
+};
+
+const showPlaceholders = import.meta.env.DEV && reviews.length === 0;
+
+---
+
+  <!-- About -->
+  <section id="about" class="scroll-mt-16 border-t border-rule bg-sand/60">
+    <div class="container-px mx-auto grid max-w-5xl items-center gap-10 py-16 sm:py-20 md:grid-cols-[minmax(0,20rem)_1fr] md:gap-14">
+      <Picture
+        src={about.src}
+        formats={["avif", "webp"]}
+        widths={[400, 640, 960]}
+        sizes="(min-width: 768px) 320px, 80vw"
+        alt={about.alt}
+        class="mx-auto aspect-[4/5] w-full max-w-xs rounded-3xl object-cover object-top shadow-xl shadow-black/15 md:max-w-none"
+        pictureAttributes={{ class: "block" }}
+        loading="lazy"
+      />
+      <div class="mx-auto max-w-[60ch] text-center md:mx-0 md:text-left">
+        <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">Your local guide.</h2>
+        <p class="mt-5 text-lg leading-relaxed text-ink/85">
+          Buying or selling a home is a big, emotional decision. You deserve someone who listens first, explains
+          every step, and gives you straight answers with no pressure.
+        </p>
+        <p class="mt-4 text-lg leading-relaxed text-ink/85">
+          That's what I'll do for you. I was born in Royal Oak and my wife and I own our home here, so I know these
+          streets as a neighbor. And I've sold everything from starter condos to million-dollar listings, so you get
+          experience at every price point.
+        </p>
+        <p class="mt-5">
+          <a href="/my-story" class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline"
+            >Read my story <Icon name="arrow" class="h-4 w-4" /></a
+          >
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials. Real quotes come from `reviews` in src/data/site.ts. Until there are some, dashed
+       placeholders show on the local dev server only; the live site hides the section. -->
+  {
+    (reviews.length > 0 || showPlaceholders) && (
+      <section class="border-t border-rule">
+        <div class="container-px mx-auto max-w-3xl py-16 sm:py-20">
+          <h2 class="text-center text-3xl font-semibold tracking-tight sm:text-4xl">What clients say</h2>
+          <div class="mt-8 flex flex-col gap-5">
+            {reviews.length > 0
+              ? reviews.map((r) => (
+                  <figure class="rounded-2xl border border-rule bg-card p-6 sm:p-8">
+                    <blockquote class="text-lg leading-relaxed text-ink/85">“{r.quote}”</blockquote>
+                    <figcaption class="mt-4 text-sm font-semibold">
+                      {r.name}{r.source && <span class="font-normal text-muted"> · {r.source}</span>}
+                    </figcaption>
+                  </figure>
+                ))
+              : [1, 2, 3].map((n) => (
+                  <figure class="rounded-2xl border-2 border-dashed border-rule p-6 sm:p-8">
+                    <blockquote class="text-lg leading-relaxed text-muted">“Client quote {n} goes here.”</blockquote>
+                    <figcaption class="mt-4 text-sm text-muted">First name · Town</figcaption>
+                  </figure>
+                ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Contact -->
+  <section id="contact" class="scroll-mt-16 border-t border-rule">
+    <div class="container-px mx-auto max-w-3xl py-16 sm:py-24">
+      <h2 class="text-center text-4xl font-semibold tracking-tight sm:text-5xl">Contact me.</h2>
+      <p class="mt-4 text-center text-lg text-muted">
+        No question is too small!
+      </p>
+
+      <ul class="mt-8 grid gap-3 sm:grid-cols-3">
+        {
+          [
+            { href: agent.sms, icon: "message", label: "Text", value: agent.phoneDisplay },
+            { href: `tel:${agent.phone}`, icon: "phone", label: "Call", value: agent.phoneDisplay },
+            { href: `mailto:${agent.email}`, icon: "mail", label: "Email", value: agent.email },
+          ].map((c) => (
+            <li>
+              <a
+                href={c.href}
+                class="flex h-full flex-col items-center rounded-2xl border border-rule bg-card p-5 text-center transition-colors hover:border-brand/50"
+              >
+                <Icon name={c.icon} class="h-5 w-5 text-brand" />
+                <span class="mt-3 font-semibold">{c.label}</span>
+                <span class="mt-0.5 break-words text-sm text-muted">{c.value}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-6 text-center">
+        <a href="/contact" class="text-sm font-medium text-muted underline-offset-4 hover:text-ink hover:underline"
+          >Or send a message →</a
+        >
+      </p>
+
+    </div>
+  </section>
+
+  <!-- Phones: keep the contact button in reach until the contact options are on screen. -->
+  <a
+    id="sticky-cta"
+    href={contactCta.href}
+    class="fixed inset-x-4 bottom-4 z-40 rounded-full bg-brand py-3.5 text-center text-base font-semibold text-white shadow-lg shadow-black/20 transition-all duration-200 sm:hidden"
+    >{contactCta.label}</a
+  >
+
+  <script>
+    // The sticky phone button only shows when neither the hero's own Contact
+    // button nor the contact section is on screen.
+    const sticky = document.getElementById("sticky-cta")!;
+    const onScreen = new Set<Element>();
+    const observer = new IntersectionObserver((entries) => {
+      for (const e of entries) e.isIntersecting ? onScreen.add(e.target) : onScreen.delete(e.target);
+      const hide = onScreen.size > 0;
+      sticky.classList.toggle("translate-y-24", hide);
+      sticky.classList.toggle("opacity-0", hide);
+      sticky.classList.toggle("pointer-events-none", hide);
+    });
+    observer.observe(document.getElementById("hero-cta")!);
+    observer.observe(document.getElementById("contact")!);
+  </script>

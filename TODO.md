@@ -1,5 +1,10 @@
 # Site rebuild TODO
 
+## v6: one page (branch `v6-one-page`)
+- [ ] Shoot the branding video (horizontal, 16:9, captions burned in), upload to YouTube (unlisted is fine) and paste its ID into `heroVideo.youtubeId` in `src/data/site.ts`. That adds a "Watch my story" button to the hero that plays it full screen
+- [ ] Before merging: deploy lead-grabber's `contact-list-optin` branch first (the form's "neighborhood list" box relies on it)
+- Old addresses (`/contact`, `/stay-in-touch`, `/what-would-a-buyer-pay`, `/my-story`, `/market-report`) redirect to the right spot on the one page and keep `?src=`
+
 ## Content to fill in
 - [x] Add Michigan license number (471094) — `agent.license` in `src/data/site.ts`
 - [x] Write your bio — home page and `src/pages/my-story.astro`

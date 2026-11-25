@@ -26,7 +26,7 @@
   --color-paper: #faf7f2;
   --color-card: #fffdf9;
   --color-sand: #f1eadf;
-  --color-muted: #6b6258;
+  --color-muted: #574f46;
   --color-rule: #e6ddd0;
 
   --font-display: "Manrope", sans-serif;
@@ -48,11 +48,6 @@
    Supported in Chrome/Edge and Safari 18.2+; other browsers just switch pages instantly. */
 @view-transition {
   navigation: auto;
-}
-
-/* The header stays put while the page content cross-fades. */
-.site-header {
-  view-transition-name: site-header;
 }
 
 @keyframes vt-fade-out {
