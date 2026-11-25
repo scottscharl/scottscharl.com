@@ -1,0 +1,54 @@
+---
+// Renders the temporary banners from src/data/banners.ts. Ones already expired at
+// build time are left out; the inline script hides any that expire after the page
+// was built, so nothing needs a redeploy to go away.
+import { banners } from "../data/banners";
+
+const now = Date.now();
+const live = banners.filter(
+  (b) => now < Date.parse(b.until) && (!b.from || now >= Date.parse(b.from)),
+);
+---
+
+{
+  live.length > 0 && (
+    <div id="banners">
+      {live.map((b) => {
+        const Tag = b.href ? "a" : "div";
+        return (
+          <div
+            id={`banner-${b.id}`}
+            data-from={b.from}
+            data-until={b.until}
+            class="border-b border-brand/20 bg-[#fdeded]"
+          >
+            <Tag
+              href={b.href}
+              class:list={[
+                "container-px mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-2 gap-y-0.5 py-2.5 text-center text-sm text-ink",
+                b.href && "hover:underline",
+              ]}
+            >
+              <span class="font-semibold">{b.title}</span>
+              {b.text && <span class="text-ink/75">{b.text}</span>}
+              {b.linkText && <span class="font-semibold text-brand-dark">{b.linkText}</span>}
+            </Tag>
+          </div>
+        );
+      })}
+    </div>
+  )
+}
+{
+  live.length > 0 && (
+    <script is:inline>
+      (function () {
+        var now = Date.now();
+        document.querySelectorAll("#banners [data-until]").forEach(function (el) {
+          var from = el.dataset.from;
+          if (now >= Date.parse(el.dataset.until) || (from && now < Date.parse(from))) el.remove();
+        });
+      })();
+    </script>
+  )
+}

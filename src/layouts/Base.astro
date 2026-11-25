@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { agent, contactCta } from "../data/site";
+import Banners from "../components/Banners.astro";
 
 interface Props {
   title: string;
@@ -56,6 +57,8 @@ const schema = {
       >Skip to main content</a
     >
 
+    <Banners />
+
     <!-- Hidden while the hero photo is on screen; slides in as a solid white bar once you scroll past it. -->
     <header
       id="site-header"
@@ -110,9 +113,18 @@ const schema = {
       // Show the header only once the hero (#hero) has scrolled out of view.
       // Pages without a hero show it all the time.
       const header = document.getElementById("site-header")!;
+      // Temporary banners sit at the top of the page; keep the fixed header below them until they scroll away.
+      const banners = document.getElementById("banners");
+      const place = () => {
+        // Only offset while the header is showing; hidden, it stays fully above the screen.
+        header.style.top = banners && !header.inert ? Math.max(0, banners.offsetHeight - window.scrollY) + "px" : "0";
+      };
+      addEventListener("scroll", place, { passive: true });
+      addEventListener("resize", place);
       const show = (visible: boolean) => {
         header.classList.toggle("-translate-y-full", !visible);
         header.inert = !visible;
+        place();
       };
       const hero = document.getElementById("hero");
       if (hero) new IntersectionObserver(([entry]) => show(!entry.isIntersecting)).observe(hero);
