@@ -4,6 +4,12 @@
 // was built, so nothing needs a redeploy to go away.
 import { banners } from "../data/banners";
 
+interface Props {
+  /** Pages whose top bar is always showing (no hero): the banner starts below it. */
+  belowHeader?: boolean;
+}
+const { belowHeader = false } = Astro.props;
+
 const now = Date.now();
 const live = banners.filter(
   (b) => now < Date.parse(b.until) && (!b.from || now >= Date.parse(b.from)),
@@ -12,7 +18,7 @@ const live = banners.filter(
 
 {
   live.length > 0 && (
-    <div id="banners">
+    <div id="banners" class:list={["sticky z-40", belowHeader ? "top-16 mb-[-4rem] mt-16" : "top-0"]}>
       {live.map((b) => {
         const Tag = b.href ? "a" : "div";
         return (
