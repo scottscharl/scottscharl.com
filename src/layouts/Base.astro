@@ -72,10 +72,11 @@ const schema = {
             height="40"
           />
           <span class="whitespace-nowrap text-lg font-semibold tracking-tight">{agent.name}</span>
-          <span class="h-6 w-px bg-rule" aria-hidden="true"></span>
-          <img src="/kw-metro.png" alt="" class="h-7 w-auto" width="76" height="28" />
+          <span class="hidden h-6 w-px bg-rule sm:block" aria-hidden="true"></span>
+          <img src="/kw-metro.png" alt="" class="hidden h-7 w-auto sm:block" width="76" height="28" />
         </a>
-        <div class="flex items-center gap-5">
+        <div class="flex items-center gap-4 sm:gap-5">
+          <a href="/" class="whitespace-nowrap text-sm font-semibold text-muted transition-colors hover:text-ink">Home</a>
           <a href="/my-story" class="whitespace-nowrap text-sm font-semibold text-muted transition-colors hover:text-ink">My Story</a>
           <a
             href={contactCta.href}
